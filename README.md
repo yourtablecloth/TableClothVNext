@@ -11,7 +11,7 @@ TableClothVNext는 Windows Sandbox를 활용하여 1회용 가상 머신을 생�
 - TableClothVNext 개발을 위해서는 Visual Studio 2022, Avalonia Tools for Visual Studio 2022, .NET 9 SDK, Git 클라이언트가 필요합니다.
 - 빌드와 테스트를 진행하려면, Windows Sandbox를 실행할 수 있는 Windows 11 Pro 이상의 OS와 하드웨어가 필요합니다.
 - Windows 10 1607 버전 이상의 OS가 필요하며, 다음의 설정이 필요합니다.
-  - 해당 OS에서 `LongPathsEnabled` 설정을 활성화해야 합니다. 설정 후 시스템을 다시 시작합니다. ([자세한 내용 보기](learn.microsoft.com/ko-kr/windows/win32/fileio/maximum-file-path-limitation#enable-long-paths-in-windows-10-version-1607-and-later))
+  - 해당 OS에서 `LongPathsEnabled` 설정을 활성화해야 합니다. 설정 후 시스템을 다시 시작합니다. ([자세한 내용 보기](https://learn.microsoft.com/ko-kr/windows/win32/fileio/maximum-file-path-limitation#enable-long-paths-in-windows-10-version-1607-and-later))
   - Git 클라이언트에서 긴 경로를 지원하도록 `git config --system core.longpaths true` 명령어를 실행해야 합니다.
 
 ## 빌드 및 실행
