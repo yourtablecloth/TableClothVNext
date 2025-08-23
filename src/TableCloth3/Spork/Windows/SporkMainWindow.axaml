@@ -12,7 +12,7 @@
 	xmlns:input="clr-namespace:Avalonia.Input;assembly=Avalonia.Base"
 	xmlns:local="clr-namespace:TableCloth3.Spork.Windows"
 	xmlns:conv="clr-namespace:TableCloth3.Spork.Converters"
-	Width="680" Height="500" MinWidth="680" MinHeight="500"
+	Width="680" Height="520" MinWidth="680" MinHeight="520"
 	x:Class="TableCloth3.Spork.Windows.SporkMainWindow"
 	x:DataType="vm:SporkMainWindowViewModel"
 	Title="{x:Static lang:SporkStrings.SporkMainWindowTitle}"

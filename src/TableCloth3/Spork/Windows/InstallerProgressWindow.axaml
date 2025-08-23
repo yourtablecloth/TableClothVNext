@@ -5,6 +5,7 @@
 		xmlns:lang="clr-namespace:TableCloth3.Spork.Languages"
 		xmlns:vm="clr-namespace:TableCloth3.Spork.ViewModels"
 		xmlns:ui="clr-namespace:Avalonia.Controls;assembly=Avalonia.Controls"
+		xmlns:controls="clr-namespace:TableCloth3.Shared.Controls"
 		mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="480"
 		Width="300" Height="400" CanResize="False"
 		MinWidth="300" MinHeight="400"
@@ -24,32 +25,29 @@
 			<InvokeCommandAction Command="{Binding LoadedCommand}" />
 		</RoutedEventTriggerBehavior>
 	</Interaction.Behaviors>
-	<Border Padding="20" BorderBrush="Gray" BorderThickness="1">
+	<Border Padding="20">
 		<Grid>
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto" />
-				<RowDefinition Height="70*" />
+				<RowDefinition Height="*" />
 				<RowDefinition Height="Auto" />
 			</Grid.RowDefinitions>
 			<Label Grid.Row="0" Content="{x:Static lang:SporkStrings.InProgressMessage}" />
+
 			<ScrollViewer Grid.Row="1" Margin="0 15 0 0">
 				<ItemsControl ItemsSource="{Binding Steps}">
 					<ItemsControl.ItemTemplate>
-						<DataTemplate>
-							<Grid Margin="0 5 15 0" IsVisible="{Binding IsVisible}">
+						<DataTemplate DataType="vm:InstallerStepItemViewModel">
+							<Grid Height="32" >
 								<Grid.ColumnDefinitions>
 									<ColumnDefinition Width="Auto" />
-									<ColumnDefinition Width="90*" />
+									<ColumnDefinition Width="*" />
 									<ColumnDefinition Width="Auto" />
 								</Grid.ColumnDefinitions>
-								<Grid.RowDefinitions>
-									<RowDefinition Height="Auto" />
-									<RowDefinition Height="Auto" />
-								</Grid.RowDefinitions>
-								<Label Grid.Row="0" Grid.Column="0" Content="{Binding StatusText}" />
-								<Label Grid.Row="0" Grid.Column="1" Content="{Binding PackageName}" />
-								<HyperlinkButton Grid.Row="0" Grid.Column="2" Content="{x:Static lang:SporkStrings.ReasonLinkText}" IsVisible="{Binding HasError}" Command="{Binding ShowErrorCommand}" CommandParameter="{Binding StepError}" />
-								<ProgressBar Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" IsVisible="{Binding ShowPercentage}" Value="{Binding Percentage}" />
+								<Label Grid.Column="0" Content="{Binding StatusText}" />
+								<Label Grid.Column="1" Content="{Binding PackageName}" />
+								<HyperlinkButton Grid.Column="2" Content="{x:Static lang:SporkStrings.ReasonLinkText}" IsVisible="{Binding HasError}" Command="{Binding ShowErrorCommand}" CommandParameter="{Binding StepError}" />
+								<controls:ProgressRing Grid.Column="2" IsVisible="{Binding !HasError}" Value="{Binding Percentage}" IsIndeterminate="False"/>
 							</Grid>
 						</DataTemplate>
 					</ItemsControl.ItemTemplate>

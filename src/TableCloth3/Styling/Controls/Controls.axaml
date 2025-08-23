@@ -8,6 +8,7 @@
 				<MergeResourceInclude Source="/Styling/Controls/ScrollViewerStyles.axaml"/>
 				<MergeResourceInclude Source="/Styling/Controls/ContentControlStyles.axaml"/>
 				<MergeResourceInclude Source="/Styling/Controls/TransitioningContentControlStyles.axaml"/>
+				<MergeResourceInclude Source="/Styling/Controls/ItemsControlStyles.axaml"/>
 				<MergeResourceInclude Source="/Styling/Controls/LabelStyles.axaml"/>
 				<MergeResourceInclude Source="/Styling/Controls/ButtonStyles.axaml"/>
 				<MergeResourceInclude Source="/Styling/Controls/ListBoxStyles.axaml"/>
