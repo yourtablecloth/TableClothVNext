@@ -1,9 +1,18 @@
+# SUITE
 Copyright (c) 2023, SUNN (http://sun.fo/suite),
 with Reserved Font Name SUITE.
 
 This Font Software is licensed under the SIL Open Font License, Version 1.1.
 This license is copied below, and is also available with a FAQ at:
 https://scripts.sil.org/OFL
+
+
+# Roboto Mono
+Copyright (c) 2011, Christian Robertson. (https://fonts.google.com/specimen/Roboto+Mono)
+
+This Font Software is licensed under the SIL Open Font License, Version 1.1 .
+This license is copied below, and is also available with a FAQ at: 
+https://openfontlicense.org
 
 
 -----------------------------------------------------------
