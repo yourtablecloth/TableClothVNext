@@ -81,12 +81,20 @@ public partial class FolderManageWindow :
         {
             var folderList = await topLevel.StorageProvider
                 .OpenFolderPickerAsync(new FolderPickerOpenOptions() { AllowMultiple = true, })
-                .ConfigureAwait(false);
+                .ConfigureAwait(true);
 
             var pathList = folderList.Select(x => x.Path.LocalPath).Distinct().ToList();
 
+            var existings = _viewModel.Folders.ToHashSet();
+
             foreach (var eachPath in pathList)
+            {
+                if (existings.Contains(eachPath)) // Skip if already exists
+                {
+                    continue;
+                } 
                 _viewModel.Folders.Add(eachPath);
+            }
         }
     }
 

@@ -15,6 +15,11 @@ public sealed partial class FolderManageWindowViewModel : BaseViewModel
         IMessenger messenger)
     {
         _messenger = messenger;
+        _folders.CollectionChanged += (_, _) =>
+        {
+            RemoveFolderButtonCommand.NotifyCanExecuteChanged();
+            ClearAllFoldersButtonCommand.NotifyCanExecuteChanged();
+        };
     }
 
     public FolderManageWindowViewModel() { }
