@@ -4,6 +4,7 @@
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:lang="clr-namespace:TableCloth3.Launcher.Languages"
 		xmlns:vm="clr-namespace:TableCloth3.Launcher.ViewModels"
+		xmlns:controls="clr-namespace:TableCloth3.Shared.Controls"
 		xmlns:ui="clr-namespace:Avalonia.Controls;assembly=Avalonia.Controls"
 		mc:Ignorable="d"
 		Width="500"
@@ -55,8 +56,7 @@
 				</StackPanel>
 			</Border>
 		</DockPanel>
-		<!--
-		xmlns:fa="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
-		<fa:ProgressRing HorizontalAlignment="Right" VerticalAlignment="Top" IsVisible="{Binding Loading}" />-->
+		
+		<controls:ProgressRing HorizontalAlignment="Right" VerticalAlignment="Top" IsVisible="{Binding Loading}" />
 	</Grid>
 </Window>

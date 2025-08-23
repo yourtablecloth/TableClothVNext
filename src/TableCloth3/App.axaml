@@ -1,26 +1,19 @@
 <Application x:Class="TableCloth3.App"
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:fa="clr-namespace:FluentAvalonia.UI.Windowing;assembly=FluentAvalonia"
-             xmlns:ctl="clr-namespace:TableCloth3.Shared.Controls"
-             >
-    <Application.Styles>
-		<SimpleTheme />
-
-        <!--
-		xmlns:sty="using:FluentAvalonia.Styling"
-		<sty:FluentAvaloniaTheme UseSystemFontOnWindows="False"
-                                 CustomAccentColor="#C33334" />-->
-
-    </Application.Styles>
+             xmlns:sty="clr-namespace:TableCloth3.Styling">
     <Application.Resources>
-        <FontFamily x:Key="ContentControlThemeFontFamily">
-            avares://TableCloth3/Assets/Fonts#SUITE
-        </FontFamily>
-		
-		<FontFamily x:Key="FixedFontFamily">
-			avares://TableCloth3/Assets/Fonts#Roboto Mono
-		</FontFamily>
+        <!--H: 358, S: 68: V: 84-->
+        <Color x:Key="AccentColor">#D64549</Color>
+        <!--H: 358, S: 65: V: 92-->
+        <Color x:Key="AccentBrightColor">#EB4B4E</Color>
 
-	</Application.Resources>
+        <FontFamily x:Key="ContentControlThemeFontFamily">avares://TableCloth3/Assets/Fonts#SUITE</FontFamily>
+
+        <FontFamily x:Key="FixedFontFamily">avares://TableCloth3/Assets/Fonts#Roboto Mono</FontFamily>
+    </Application.Resources>
+    
+    <Application.Styles>
+        <sty:FluentAvaloniaTheme UseSystemFontOnWindows="False" CustomAccentColor="{StaticResource AccentColor}" />
+     </Application.Styles>
 </Application>

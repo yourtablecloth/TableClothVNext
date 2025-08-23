@@ -13,7 +13,7 @@ public sealed class Int32EqualsConverter : MarkupExtension, IValueConverter
         intValue == paramterValue;
 
     public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
-        => default;
+        => throw new NotImplementedException();
 
     public override object ProvideValue(IServiceProvider serviceProvider)
         => this;

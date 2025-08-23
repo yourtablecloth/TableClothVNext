@@ -2,10 +2,10 @@ using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Styling;
-
-//using FluentAvalonia.UI.Windowing;
+using System.Diagnostics;
 
 namespace TableCloth3.Spork.Controls;
 
@@ -14,6 +14,14 @@ public partial class SplashContent : UserControl
     public SplashContent()
     {
         InitializeComponent();
+    }
+
+    protected override async void OnLoaded(RoutedEventArgs e)
+    {
+        if (IsVisible)
+        {
+            await StartAnimation();
+        }
     }
 
     public Func<Task>? InitializationTask { get; set; }
@@ -30,13 +38,6 @@ public partial class SplashContent : UserControl
 
     public async Task StartAnimation()
     {
-        if (InitializationTask is not null)
-        {
-            await InitializationTask();
-
-            InitializationTask = null;
-        }
-
         double imageStartOffsetY = -700.0;
         double textStartOffsetY = -50.0;
 
@@ -117,7 +118,10 @@ public partial class SplashContent : UserControl
         }
         else
         {
-            await Task.Delay(1500);
+            if (!Debugger.IsAttached)
+            {
+                await Task.Delay(1500);
+            }
         }
 
         var fadeOutAnim = new Animation
@@ -140,36 +144,10 @@ public partial class SplashContent : UserControl
         };
 
         await Task.WhenAll(fadeOutAnim.RunAsync(image), fadeOutAnim.RunAsync(text), fadeOutAnim.RunAsync(this));
-    }
-}
 
-/*
-public class SplashScreen : IApplicationSplashScreen
-{
-    private SplashContent _splashContent = new SplashContent();
-
-    public string? AppName { get; set; }
-
-    public IImage? AppIcon { get; set; }
-
-    public object SplashScreenContent => _splashContent;
-
-    public int MinimumShowTime => 3000;
-
-    public Func<Task>? InitializationTask { get => _splashContent.InitializationTask; set => _splashContent.InitializationTask = value; }
-
-    public event EventHandler? TaskCompleted;
-
-    public async Task RunTasks(CancellationToken cancellationToken)
-    {
-        try
+        if (Parent is Panel panel)
         {
-            await _splashContent.StartAnimation();
-        }
-        finally
-        {
-            TaskCompleted?.Invoke(this, EventArgs.Empty);
+            panel.Children.Remove(this);
         }
     }
 }
-*/

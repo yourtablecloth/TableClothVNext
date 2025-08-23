@@ -5,7 +5,6 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:lang="clr-namespace:TableCloth3.Shared.Languages"
 	xmlns:vm="clr-namespace:TableCloth3.Shared.ViewModels"
-	xmlns:sc="clr-namespace:TableCloth3.Shared.Controls"
 	xmlns:controls="clr-namespace:TableCloth3.Shared.Controls"
 	mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="250"
 	Width="600" Height="340" CanResize="False"
