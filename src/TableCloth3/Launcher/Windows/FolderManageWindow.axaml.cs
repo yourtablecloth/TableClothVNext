@@ -90,9 +90,8 @@ public partial class FolderManageWindow :
             foreach (var eachPath in pathList)
             {
                 if (existings.Contains(eachPath)) // Skip if already exists
-                {
                     continue;
-                } 
+
                 _viewModel.Folders.Add(eachPath);
             }
         }

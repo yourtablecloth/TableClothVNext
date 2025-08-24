@@ -21,7 +21,7 @@
 		<Grid Margin="0,10,0,0" DockPanel.Dock="Bottom">
 			<StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
 				<Button Command="{Binding AddFolderButtonCommand}" Content="{x:Static lang:LauncherStrings.AddFoldersButton}" />
-				<Button Command="{Binding RemoveFolderButtonCommand}" Content="{x:Static lang:LauncherStrings.RemoveFolderButton}" Margin="10,0" />
+				<Button Command="{Binding RemoveFolderButtonCommand}" Content="{x:Static lang:LauncherStrings.RemoveFolderButton}"         CommandParameter="{Binding SelectedItem, ElementName=FolderList}" Margin="10,0" />
 				<Button Command="{Binding ClearAllFoldersButtonCommand}" Content="{x:Static lang:LauncherStrings.ClearAllFoldersButton}" />
 			</StackPanel>
 			<StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
