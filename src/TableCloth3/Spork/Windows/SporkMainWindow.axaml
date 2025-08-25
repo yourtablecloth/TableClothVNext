@@ -129,166 +129,28 @@
 				Command="{Binding LoadedCommand}" />
 		</RoutedEventTriggerBehavior>
 	</Interaction.Behaviors>
-	<Grid>		
-	<DockPanel
-		Background="{DynamicResource AccentColor}">
+	<Grid>
 		<DockPanel
-			Margin="10"
-			Width="120">
-			<DockPanel.Resources>
-				<ControlTheme
-					x:Key="MenuToggleButtonTheme"
-					TargetType="ToggleButton">
-					<Setter Property="Foreground" Value="#A0FFFFFF" />
-					<Setter Property="Background" Value="Transparent" />
-					<Setter Property="CornerRadius" Value="4" />
-					<Setter Property="VerticalContentAlignment" Value="Center" />
-					<Setter Property="FontSize" Value="16" />
-					<Setter Property="FontWeight" Value="SemiBold" />
-					<Setter Property="MinHeight" Value="36" />
-					<Setter Property="Padding" Value="8,4" />
-					<Setter Property="IsHitTestVisible" Value="{Binding !$self.IsChecked}" />
-					<Setter Property="Template">
-						<ControlTemplate
-							TargetType="ToggleButton">
-							<Border
-								Name="PART_Border"
-								Background="{TemplateBinding Background}"
-								CornerRadius="{TemplateBinding CornerRadius}">
-
-								<ContentPresenter
-									Name="PART_ContentPresenter"
-									Margin="{TemplateBinding Padding}"
-									HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-									VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-									Content="{TemplateBinding Content}"
-									ContentTemplate="{TemplateBinding ContentTemplate}"
-									FontWeight="{TemplateBinding FontWeight}"
-									Foreground="{TemplateBinding Foreground}" />
-							</Border>
-						</ControlTemplate>
-					</Setter>
-					<Style
-						Selector="^:pointerover">
-						<Setter Property="Foreground" Value="White" />
-					</Style>
-					<Style
-						Selector="^:checked">
-						<Setter Property="Background" Value="{DynamicResource AccentBrightColor}" />
-						<Setter Property="Foreground" Value="White" />
-					</Style>
-				</ControlTheme>
-			</DockPanel.Resources>
-
-			<TextBlock
-				Margin="0,0,0,10"
-				DockPanel.Dock="Top"
-				FontSize="20"
-				FontWeight="SemiBold"
-				Foreground="White"
-				Text="{Binding $parent[Window].Title}" />
-
-			<StackPanel
-				DockPanel.Dock="Bottom">
-				<Border
-					Height="2"
-					CornerRadius="1"
-					Margin="0,4"
-					Background="{DynamicResource LayerOnAcrylicFillColorDefault}" />
-				<ToggleButton
-					Command="{Binding SetMenuCommand}"
-					CommandParameter="Addon"
-					IsChecked="{Binding MenuIndex, Mode=OneWay, Converter={conv:Int32EqualsConverter}, ConverterParameter=1}"
-					Theme="{StaticResource MenuToggleButtonTheme}">
-					<StackPanel
-						Orientation="Horizontal">
-						<Path
-							Width="16"
-							Height="16"
-							Fill="{Binding $parent[ToggleButton].Foreground}"
-							Stretch="Fill"
-							Data="{StaticResource MenuIconAddon}" />
-
-						<TextBlock
-							Margin="8,0,0,0"
-							Text="{x:Static lang:SporkStrings.AddonsHeader}" />
-					</StackPanel>
-				</ToggleButton>
-				<Border
-					Height="2"
-					CornerRadius="1"
-					Margin="0,4"
-					Background="{DynamicResource LayerOnAcrylicFillColorDefault}" />
-				<ToggleButton
-					Command="{Binding SetMenuCommand}"
-					CommandParameter="About"
-					IsChecked="{Binding MenuIndex, Mode=OneWay, Converter={conv:Int32EqualsConverter}, ConverterParameter=3}"
-					Theme="{StaticResource MenuToggleButtonTheme}">
-					<StackPanel
-						Orientation="Horizontal">
-						<Path
-							Width="16"
-							Height="16"
-							Fill="{Binding $parent[ToggleButton].Foreground}"
-							Stretch="Fill"
-							Data="{StaticResource MenuIconAbout}" />
-
-						<TextBlock
-							Margin="8,0,0,0"
-							Text="{x:Static lang:SporkStrings.AboutHeader}" />
-					</StackPanel>
-				</ToggleButton>
-			</StackPanel>
-
-			<ToggleButton
-				DockPanel.Dock="Top"
-				Background="Transparent"
-				Command="{Binding SetMenuCommand}"
-				CommandParameter="Catalog"
-				IsChecked="{Binding MenuIndex, Mode=OneWay, Converter={conv:Int32EqualsConverter}, ConverterParameter=0}"
-				Theme="{StaticResource MenuToggleButtonTheme}">
-				<StackPanel
-					Orientation="Horizontal">
-					<Path
-						Width="16"
-						Height="16"
-						Fill="{Binding $parent[ToggleButton].Foreground}"
-						Stretch="Fill"
-						Data="{StaticResource MenuIconCatalog}" />
-
-					<TextBlock
-						Margin="8,0,0,0"
-						Text="{x:Static lang:SporkStrings.CatalogHeader}" />
-				</StackPanel>
-			</ToggleButton>
-
-			<ListBox
-				Margin="10,0,10,0"
-				Background="Transparent"
-				DisplayMemberBinding="{Binding CategoryDisplayName}"
-				IsVisible="{Binding HasCatalogItems}"
-				ItemsSource="{Binding CatalogCategoryItems}"
-				SelectedValue="{Binding Path=SelectedCatalogCategory}">
-				<Interaction.Behaviors>
-					<RoutedEventTriggerBehavior
-						RoutedEvent="{x:Static input:InputElement.GotFocusEvent}">
-						<InvokeCommandAction
-							Command="{Binding SetMenuCommand}"
-							CommandParameter="Catalog" />
-					</RoutedEventTriggerBehavior>
-				</Interaction.Behaviors>
-				<ListBox.ItemContainerTheme>
+			Background="{DynamicResource AccentColor}">
+			<DockPanel
+				Margin="10"
+				Width="120">
+				<DockPanel.Resources>
 					<ControlTheme
-						TargetType="ListBoxItem">
+						x:Key="MenuToggleButtonTheme"
+						TargetType="ToggleButton">
 						<Setter Property="Foreground" Value="#A0FFFFFF" />
 						<Setter Property="Background" Value="Transparent" />
 						<Setter Property="CornerRadius" Value="4" />
 						<Setter Property="VerticalContentAlignment" Value="Center" />
+						<Setter Property="FontSize" Value="16" />
+						<Setter Property="FontWeight" Value="SemiBold" />
 						<Setter Property="MinHeight" Value="36" />
 						<Setter Property="Padding" Value="8,4" />
+						<Setter Property="IsHitTestVisible" Value="{Binding !$self.IsChecked}" />
 						<Setter Property="Template">
 							<ControlTemplate
-								TargetType="ListBoxItem">
+								TargetType="ToggleButton">
 								<Border
 									Name="PART_Border"
 									Background="{TemplateBinding Background}"
@@ -311,321 +173,458 @@
 							<Setter Property="Foreground" Value="White" />
 						</Style>
 						<Style
-							Selector="^:selected">
+							Selector="^:checked">
 							<Setter Property="Background" Value="{DynamicResource AccentBrightColor}" />
 							<Setter Property="Foreground" Value="White" />
-							<Setter Property="FontWeight" Value="SemiBold" />
 						</Style>
 					</ControlTheme>
-				</ListBox.ItemContainerTheme>
-			</ListBox>
-		</DockPanel>
+				</DockPanel.Resources>
 
-		<Border
-			Background="{DynamicResource SolidBackgroundFillColorTertiary}"
-			CornerRadius="8,0,0,8">
-			<DockPanel>
-				<TabControl
-					SelectedIndex="{Binding MenuIndex}">
-					<TabControl.Template>
-						<ControlTemplate
-							TargetType="TabControl">
-							<Border
-								Margin="{TemplateBinding Margin}"
-								HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
-								VerticalAlignment="{TemplateBinding VerticalAlignment}"
-								Background="{TemplateBinding Background}"
-								BorderBrush="{TemplateBinding BorderBrush}"
-								BorderThickness="{TemplateBinding BorderThickness}">
-								<DockPanel>
-									<ItemsPresenter
-										Name="PART_ItemsPresenter"
-										DockPanel.Dock="{TemplateBinding TabStripPlacement}"
-										IsVisible="False"
-										ItemsPanel="{TemplateBinding ItemsPanel}" />
-									<ContentPresenter
-										Name="PART_SelectedContentHost"
-										Margin="{TemplateBinding Padding}"
-										HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-										VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-										Content="{TemplateBinding SelectedContent}"
-										ContentTemplate="{TemplateBinding SelectedContentTemplate}" />
-								</DockPanel>
-							</Border>
-						</ControlTemplate>
-					</TabControl.Template>
-					<TabItem
-						Header="{x:Static lang:SporkStrings.CatalogHeader}">
-						<Grid>
-							<Grid.RowDefinitions>
-								<RowDefinition
-									Height="Auto" />
-								<RowDefinition
-									Height="Auto" />
-								<RowDefinition
-									Height="*" />
-							</Grid.RowDefinitions>
-							<TextBox
-								Width="240"
-								Margin="0,4"
-								IsEnabled="{Binding !IsLoading}"
-								HorizontalAlignment="Center"
-								Text="{Binding CatalogFilterText, UpdateSourceTrigger=PropertyChanged}"
-								Watermark="{x:Static lang:SporkStrings.SearchBoxWatermark}" />
+				<TextBlock
+					Margin="0,0,0,10"
+					DockPanel.Dock="Top"
+					FontSize="20"
+					FontWeight="SemiBold"
+					Foreground="White"
+					Text="{Binding $parent[Window].Title}" />
 
-							<Grid
-								Grid.Row="1">
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition
-										Width="*" />
-									<ColumnDefinition
-										Width="Auto" />
-								</Grid.ColumnDefinitions>
-								<Label
-									Grid.Column="0"
-									VerticalAlignment="Center"
-									Content="{x:Static lang:SporkStrings.CategoryInstructionLabel}" />
-								<Button
-									Grid.Column="1"
-									HorizontalAlignment="Right"
-									Command="{Binding RefreshCommand}"
-									Content="{x:Static lang:SporkStrings.RefreshButton}" />
-							</Grid>
+				<StackPanel
+					DockPanel.Dock="Bottom">
+					<Border
+						Height="2"
+						CornerRadius="1"
+						Margin="0,4"
+						Background="{DynamicResource LayerOnAcrylicFillColorDefault}" />
+					<ToggleButton
+						Command="{Binding SetMenuCommand}"
+						CommandParameter="Addon"
+						IsChecked="{Binding MenuIndex, Mode=OneWay, Converter={conv:Int32EqualsConverter}, ConverterParameter=1}"
+						Theme="{StaticResource MenuToggleButtonTheme}">
+						<StackPanel
+							Orientation="Horizontal">
+							<Path
+								Width="16"
+								Height="16"
+								Fill="{Binding $parent[ToggleButton].Foreground}"
+								Stretch="Fill"
+								Data="{StaticResource MenuIconAddon}" />
 
-							<Grid
-								Grid.Row="2"
-								Margin="0,10,0,10"
-								IsVisible="{Binding IsLoadingCompleted}">
-								<ContentControl
-									ContentTemplate="{StaticResource NoResultTemplate}"
-									IsVisible="{Binding HasNoCatalogItems}" />
+							<TextBlock
+								Margin="8,0,0,0"
+								Text="{x:Static lang:SporkStrings.AddonsHeader}" />
+						</StackPanel>
+					</ToggleButton>
+					<Border
+						Height="2"
+						CornerRadius="1"
+						Margin="0,4"
+						Background="{DynamicResource LayerOnAcrylicFillColorDefault}" />
+					<ToggleButton
+						Command="{Binding SetMenuCommand}"
+						CommandParameter="About"
+						IsChecked="{Binding MenuIndex, Mode=OneWay, Converter={conv:Int32EqualsConverter}, ConverterParameter=3}"
+						Theme="{StaticResource MenuToggleButtonTheme}">
+						<StackPanel
+							Orientation="Horizontal">
+							<Path
+								Width="16"
+								Height="16"
+								Fill="{Binding $parent[ToggleButton].Foreground}"
+								Stretch="Fill"
+								Data="{StaticResource MenuIconAbout}" />
 
-								<Border
-									Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
-									BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
-									BorderThickness="1"
-									CornerRadius="6"
-									IsVisible="{Binding HasCatalogItems}">
-									<ListBox
-										Background="Transparent"
-										ItemsSource="{Binding FilteredCatalogItems}">
-										<ItemsControl.ItemTemplate>
-											<DataTemplate>
-												<Border
-													Margin="0,8"
-													Padding="0,6,12,6">
-													<Grid
-														ColumnDefinitions="Auto,*,Auto"
-														RowDefinitions="auto,auto">
-														<Image
-															Grid.RowSpan="2"
-															Width="32"
-															Height="32"
-															Margin="0,0,16,0"
-															VerticalAlignment="Center"
-															RenderOptions.BitmapInterpolationMode="HighQuality"
-															Source="{Binding ServiceIcon}" />
+							<TextBlock
+								Margin="8,0,0,0"
+								Text="{x:Static lang:SporkStrings.AboutHeader}" />
+						</StackPanel>
+					</ToggleButton>
+				</StackPanel>
 
-														<StackPanel
-															Grid.Column="1"
-															Height="23"
-															Orientation="Horizontal"
-															Spacing="8">
-															<TextBlock
-																FontSize="18"
-																FontWeight="SemiBold"
-																Text="{Binding DisplayName}" />
-															<Border
-																Padding="3,0"
-																VerticalAlignment="Center"
-																Background="#FFD54F"
-																CornerRadius="8">
-																<TextBlock
-																	Padding="3"
-																	FontSize="12"
-																	Foreground="#665600"
-																	Text="{Binding CategoryDisplayName}" />
-															</Border>
-														</StackPanel>
+				<ToggleButton
+					DockPanel.Dock="Top"
+					Background="Transparent"
+					Command="{Binding SetMenuCommand}"
+					CommandParameter="Catalog"
+					IsChecked="{Binding MenuIndex, Mode=OneWay, Converter={conv:Int32EqualsConverter}, ConverterParameter=0}"
+					Theme="{StaticResource MenuToggleButtonTheme}">
+					<StackPanel
+						Orientation="Horizontal">
+						<Path
+							Width="16"
+							Height="16"
+							Fill="{Binding $parent[ToggleButton].Foreground}"
+							Stretch="Fill"
+							Data="{StaticResource MenuIconCatalog}" />
 
-														<TextBlock
-															Grid.Row="1"
-															Grid.Column="1"
-															Margin="0,3,0,0"
-															FontSize="13"
-															Foreground="#757575"
-															Text="{Binding TargetUrl}" />
+						<TextBlock
+							Margin="8,0,0,0"
+							Text="{x:Static lang:SporkStrings.CatalogHeader}" />
+					</StackPanel>
+				</ToggleButton>
 
-														<StackPanel
-															Grid.Row="0"
-															Grid.RowSpan="2"
-															Grid.Column="2"
-															HorizontalAlignment="Right"
-															VerticalAlignment="Center"
-															Spacing="5">
-															<Button
-																MinWidth="60"
-																Command="{Binding LaunchSiteCommand}"
-																CommandParameter="{Binding ServiceId}"
-																Content="{x:Static lang:SporkStrings.LaunchButton}" />
-														</StackPanel>
-													</Grid>
-												</Border>
-											</DataTemplate>
-										</ItemsControl.ItemTemplate>
-									</ListBox>
-								</Border>
-							</Grid>
+				<ListBox
+					Margin="10,0,10,0"
+					Background="Transparent"
+					DisplayMemberBinding="{Binding CategoryDisplayName}"
+					IsVisible="{Binding HasCatalogItems}"
+					ItemsSource="{Binding CatalogCategoryItems}"
+					SelectedValue="{Binding Path=SelectedCatalogCategory}">
+					<Interaction.Behaviors>
+						<RoutedEventTriggerBehavior
+							RoutedEvent="{x:Static input:InputElement.GotFocusEvent}">
+							<InvokeCommandAction
+								Command="{Binding SetMenuCommand}"
+								CommandParameter="Catalog" />
+						</RoutedEventTriggerBehavior>
+					</Interaction.Behaviors>
+					<ListBox.ItemContainerTheme>
+						<ControlTheme
+							TargetType="ListBoxItem">
+							<Setter Property="Foreground" Value="#A0FFFFFF" />
+							<Setter Property="Background" Value="Transparent" />
+							<Setter Property="CornerRadius" Value="4" />
+							<Setter Property="VerticalContentAlignment" Value="Center" />
+							<Setter Property="MinHeight" Value="36" />
+							<Setter Property="Padding" Value="8,4" />
+							<Setter Property="Template">
+								<ControlTemplate
+									TargetType="ListBoxItem">
+									<Border
+										Name="PART_Border"
+										Background="{TemplateBinding Background}"
+										CornerRadius="{TemplateBinding CornerRadius}">
 
-							<ContentControl
-								ContentTemplate="{StaticResource LoadingTemplate}"
-								Grid.Row="2"
-								IsVisible="{Binding IsLoading}" />
-						</Grid>
-					</TabItem>
-					<TabItem
-						Header="{x:Static lang:SporkStrings.AddonsHeader}">
-						<Grid>
-							<Grid.RowDefinitions>
-								<RowDefinition
-									Height="Auto" />
-								<RowDefinition
-									Height="Auto" />
-								<RowDefinition
-									Height="*" />
-							</Grid.RowDefinitions>
-							<TextBox
-								Width="240"
-								Margin="0,4"
-								IsEnabled="{Binding !IsLoading}"
-								HorizontalAlignment="Center"
-								Watermark="{x:Static lang:SporkStrings.SearchBoxWatermark}"
-								Text="{Binding AddonFilterText, UpdateSourceTrigger=PropertyChanged}" />
-							<Grid
-								Grid.Row="1">
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition
-										Width="*" />
-									<ColumnDefinition
-										Width="Auto" />
-								</Grid.ColumnDefinitions>
-								<Label
-									Grid.Column="0"
-									VerticalAlignment="Center"
-									Content="{x:Static lang:SporkStrings.AddonInstructionLabel}" />
-
-								<Button
-									Grid.Column="1"
-									HorizontalAlignment="Right"
-									Command="{Binding RefreshCommand}"
-									Content="{x:Static lang:SporkStrings.RefreshButton}" />
-							</Grid>
-							<Grid
-								Grid.Row="2"
-								Margin="0,10,0,10"
-								IsVisible="{Binding IsLoadingCompleted}">
-								<ContentControl
-									ContentTemplate="{StaticResource NoResultTemplate}"
-									IsVisible="{Binding HasNoAddonItems}" />
-
-								<Border
-									Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
-									BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
-									BorderThickness="1"
-									CornerRadius="6"
-									IsVisible="{Binding HasAddonItems}">
-									<ListBox
-										ItemsSource="{Binding FilteredAddonItems}">
-										<ItemsControl.ItemTemplate>
-											<DataTemplate>
-												<Border
-													Margin="0,8"
-													Padding="0,6,12,6">
-													<Grid
-														ColumnDefinitions="Auto,*,Auto"
-														RowDefinitions="auto,auto">
-														<Image
-															Grid.RowSpan="2"
-															Width="32"
-															Height="32"
-															Margin="0,0,16,0"
-															VerticalAlignment="Center"
-															RenderOptions.BitmapInterpolationMode="HighQuality"
-															Source="{Binding AddonIcon}" />
-
-														<StackPanel
-															Grid.Column="1"
-															Height="23"
-															Orientation="Horizontal"
-															Spacing="8">
-															<TextBlock
-																FontSize="18"
-																FontWeight="SemiBold"
-																Text="{Binding DisplayName}" />
-															<Border
-																Padding="3,0"
-																VerticalAlignment="Center"
-																CornerRadius="8">
-																<TextBlock
-																	Padding="3"
-																	FontSize="12"
-																	Foreground="#665600"
-																	Text=" " />
-															</Border>
-														</StackPanel>
-
-														<TextBlock
-															Grid.Row="1"
-															Grid.Column="1"
-															Margin="0,3,0,0"
-															FontSize="13"
-															Foreground="#757575"
-															Text="{Binding TargetUrl}" />
-
-														<StackPanel
-															Grid.Row="0"
-															Grid.RowSpan="2"
-															Grid.Column="2"
-															HorizontalAlignment="Right"
-															VerticalAlignment="Center"
-															Spacing="5">
-															<Button
-																MinWidth="60"
-																Command="{Binding LaunchAddonCommand}"
-																CommandParameter="{Binding AddonId}"
-																Content="{x:Static lang:SporkStrings.LaunchButton}" />
-														</StackPanel>
-													</Grid>
-												</Border>
-											</DataTemplate>
-										</ItemsControl.ItemTemplate>
-									</ListBox>
-								</Border>
-
-							</Grid>
-							
-							<ContentControl
-								ContentTemplate="{StaticResource LoadingTemplate}"
-								Grid.Row="2"
-								IsVisible="{Binding IsLoading}" />
-						</Grid>
-					</TabItem>
-					<TabItem
-						Header="{x:Static lang:SporkStrings.ChatHeader}"
-						IsVisible="False" />
-					<TabItem
-						Header="{x:Static lang:SporkStrings.AboutHeader}">
-						<controls:AboutControl
-							Margin="20"
-							CheckUpdateCommand="{Binding CheckUpdateButtonCommand}"
-							VersionInfo="{Binding VersionInfo}"
-							VisitGitHubCommand="{Binding VisitGitHubButtonCommand}"
-							VisitWebSiteCommand="{Binding VisitWebSiteButtonCommand}" />
-					</TabItem>
-				</TabControl>
+										<ContentPresenter
+											Name="PART_ContentPresenter"
+											Margin="{TemplateBinding Padding}"
+											HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+											VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+											Content="{TemplateBinding Content}"
+											ContentTemplate="{TemplateBinding ContentTemplate}"
+											FontWeight="{TemplateBinding FontWeight}"
+											Foreground="{TemplateBinding Foreground}" />
+									</Border>
+								</ControlTemplate>
+							</Setter>
+							<Style
+								Selector="^:pointerover">
+								<Setter Property="Foreground" Value="White" />
+							</Style>
+							<Style
+								Selector="^:selected">
+								<Setter Property="Background" Value="{DynamicResource AccentBrightColor}" />
+								<Setter Property="Foreground" Value="White" />
+								<Setter Property="FontWeight" Value="SemiBold" />
+							</Style>
+						</ControlTheme>
+					</ListBox.ItemContainerTheme>
+				</ListBox>
 			</DockPanel>
-		</Border>
-	</DockPanel>
+
+			<Border
+				Background="{DynamicResource SolidBackgroundFillColorTertiary}"
+				CornerRadius="8,0,0,8">
+				<DockPanel>
+					<TabControl
+						SelectedIndex="{Binding MenuIndex}">
+						<TabControl.Template>
+							<ControlTemplate
+								TargetType="TabControl">
+								<Border
+									Margin="{TemplateBinding Margin}"
+									HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+									VerticalAlignment="{TemplateBinding VerticalAlignment}"
+									Background="{TemplateBinding Background}"
+									BorderBrush="{TemplateBinding BorderBrush}"
+									BorderThickness="{TemplateBinding BorderThickness}">
+									<DockPanel>
+										<ItemsPresenter
+											Name="PART_ItemsPresenter"
+											DockPanel.Dock="{TemplateBinding TabStripPlacement}"
+											IsVisible="False"
+											ItemsPanel="{TemplateBinding ItemsPanel}" />
+										<ContentPresenter
+											Name="PART_SelectedContentHost"
+											Margin="{TemplateBinding Padding}"
+											HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+											VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+											Content="{TemplateBinding SelectedContent}"
+											ContentTemplate="{TemplateBinding SelectedContentTemplate}" />
+									</DockPanel>
+								</Border>
+							</ControlTemplate>
+						</TabControl.Template>
+						<TabItem
+							Header="{x:Static lang:SporkStrings.CatalogHeader}">
+							<Grid>
+								<Grid.RowDefinitions>
+									<RowDefinition
+										Height="Auto" />
+									<RowDefinition
+										Height="Auto" />
+									<RowDefinition
+										Height="*" />
+								</Grid.RowDefinitions>
+								<TextBox
+									Width="240"
+									Margin="0,4"
+									IsEnabled="{Binding !IsLoading}"
+									HorizontalAlignment="Center"
+									Text="{Binding CatalogFilterText, UpdateSourceTrigger=PropertyChanged}"
+									Watermark="{x:Static lang:SporkStrings.SearchBoxWatermark}" />
+
+								<Grid
+									Grid.Row="1">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition
+											Width="*" />
+										<ColumnDefinition
+											Width="Auto" />
+									</Grid.ColumnDefinitions>
+									<Label
+										Grid.Column="0"
+										VerticalAlignment="Center"
+										Content="{x:Static lang:SporkStrings.CategoryInstructionLabel}" />
+									<Button
+										Grid.Column="1"
+										HorizontalAlignment="Right"
+										Command="{Binding RefreshCommand}"
+										Content="{x:Static lang:SporkStrings.RefreshButton}" />
+								</Grid>
+
+								<Grid
+									Grid.Row="2"
+									Margin="0,10,0,10"
+									IsVisible="{Binding IsLoadingCompleted}">
+									<ContentControl
+										ContentTemplate="{StaticResource NoResultTemplate}"
+										IsVisible="{Binding HasNoCatalogItems}" />
+
+									<Border
+										Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+										BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+										BorderThickness="1"
+										CornerRadius="6"
+										IsVisible="{Binding HasCatalogItems}">
+										<ListBox
+											Background="Transparent"
+											ItemsSource="{Binding FilteredCatalogItems}">
+											<ItemsControl.ItemTemplate>
+												<DataTemplate>
+													<Border
+														Margin="0,8"
+														Padding="0,6,12,6">
+														<Grid
+															ColumnDefinitions="Auto,*,Auto"
+															RowDefinitions="auto,auto">
+															<Image
+																Grid.RowSpan="2"
+																Width="32"
+																Height="32"
+																Margin="0,0,16,0"
+																VerticalAlignment="Center"
+																RenderOptions.BitmapInterpolationMode="HighQuality"
+																Source="{Binding ServiceIcon}" />
+
+															<StackPanel
+																Grid.Column="1"
+																Height="23"
+																Orientation="Horizontal"
+																Spacing="8">
+																<TextBlock
+																	FontSize="18"
+																	FontWeight="SemiBold"
+																	Text="{Binding DisplayName}" />
+																<Border
+																	Padding="3,0"
+																	VerticalAlignment="Center"
+																	Background="#FFD54F"
+																	CornerRadius="8">
+																	<TextBlock
+																		Padding="3"
+																		FontSize="12"
+																		Foreground="#665600"
+																		Text="{Binding CategoryDisplayName}" />
+																</Border>
+															</StackPanel>
+
+															<TextBlock
+																Grid.Row="1"
+																Grid.Column="1"
+																Margin="0,3,0,0"
+																FontSize="13"
+																Foreground="#757575"
+																Text="{Binding TargetUrl}" />
+
+															<StackPanel
+																Grid.Row="0"
+																Grid.RowSpan="2"
+																Grid.Column="2"
+																HorizontalAlignment="Right"
+																VerticalAlignment="Center"
+																Spacing="5">
+																<Button
+																	MinWidth="60"
+																	Command="{Binding LaunchSiteCommand}"
+																	CommandParameter="{Binding ServiceId}"
+																	Content="{x:Static lang:SporkStrings.LaunchButton}" />
+															</StackPanel>
+														</Grid>
+													</Border>
+												</DataTemplate>
+											</ItemsControl.ItemTemplate>
+										</ListBox>
+									</Border>
+								</Grid>
+
+								<ContentControl
+									ContentTemplate="{StaticResource LoadingTemplate}"
+									Grid.Row="2"
+									IsVisible="{Binding IsLoading}" />
+							</Grid>
+						</TabItem>
+						<TabItem
+							Header="{x:Static lang:SporkStrings.AddonsHeader}">
+							<Grid>
+								<Grid.RowDefinitions>
+									<RowDefinition
+										Height="Auto" />
+									<RowDefinition
+										Height="Auto" />
+									<RowDefinition
+										Height="*" />
+								</Grid.RowDefinitions>
+								<TextBox
+									Width="240"
+									Margin="0,4"
+									IsEnabled="{Binding !IsLoading}"
+									HorizontalAlignment="Center"
+									Watermark="{x:Static lang:SporkStrings.SearchBoxWatermark}"
+									Text="{Binding AddonFilterText, UpdateSourceTrigger=PropertyChanged}" />
+								<Grid
+									Grid.Row="1">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition
+											Width="*" />
+										<ColumnDefinition
+											Width="Auto" />
+									</Grid.ColumnDefinitions>
+									<Label
+										Grid.Column="0"
+										VerticalAlignment="Center"
+										Content="{x:Static lang:SporkStrings.AddonInstructionLabel}" />
+
+									<Button
+										Grid.Column="1"
+										HorizontalAlignment="Right"
+										Command="{Binding RefreshCommand}"
+										Content="{x:Static lang:SporkStrings.RefreshButton}" />
+								</Grid>
+								<Grid
+									Grid.Row="2"
+									Margin="0,10,0,10"
+									IsVisible="{Binding IsLoadingCompleted}">
+									<ContentControl
+										ContentTemplate="{StaticResource NoResultTemplate}"
+										IsVisible="{Binding HasNoAddonItems}" />
+
+									<Border
+										Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+										BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+										BorderThickness="1"
+										CornerRadius="6"
+										IsVisible="{Binding HasAddonItems}">
+										<ListBox
+											ItemsSource="{Binding FilteredAddonItems}">
+											<ItemsControl.ItemTemplate>
+												<DataTemplate>
+													<Border
+														Margin="0,8"
+														Padding="0,6,12,6">
+														<Grid
+															ColumnDefinitions="Auto,*,Auto"
+															RowDefinitions="auto,auto">
+															<Image
+																Grid.RowSpan="2"
+																Width="32"
+																Height="32"
+																Margin="0,0,16,0"
+																VerticalAlignment="Center"
+																RenderOptions.BitmapInterpolationMode="HighQuality"
+																Source="{Binding AddonIcon}" />
+
+															<StackPanel
+																Grid.Column="1"
+																Height="23"
+																Orientation="Horizontal"
+																Spacing="8">
+																<TextBlock
+																	FontSize="18"
+																	FontWeight="SemiBold"
+																	Text="{Binding DisplayName}" />
+																<Border
+																	Padding="3,0"
+																	VerticalAlignment="Center"
+																	CornerRadius="8">
+																	<TextBlock
+																		Padding="3"
+																		FontSize="12"
+																		Foreground="#665600"
+																		Text=" " />
+																</Border>
+															</StackPanel>
+
+															<TextBlock
+																Grid.Row="1"
+																Grid.Column="1"
+																Margin="0,3,0,0"
+																FontSize="13"
+																Foreground="#757575"
+																Text="{Binding TargetUrl}" />
+
+															<StackPanel
+																Grid.Row="0"
+																Grid.RowSpan="2"
+																Grid.Column="2"
+																HorizontalAlignment="Right"
+																VerticalAlignment="Center"
+																Spacing="5">
+																<Button
+																	MinWidth="60"
+																	Command="{Binding LaunchAddonCommand}"
+																	CommandParameter="{Binding AddonId}"
+																	Content="{x:Static lang:SporkStrings.LaunchButton}" />
+															</StackPanel>
+														</Grid>
+													</Border>
+												</DataTemplate>
+											</ItemsControl.ItemTemplate>
+										</ListBox>
+									</Border>
+								</Grid>
+
+								<ContentControl
+									ContentTemplate="{StaticResource LoadingTemplate}"
+									Grid.Row="2"
+									IsVisible="{Binding IsLoading}" />
+							</Grid>
+						</TabItem>
+						<TabItem
+							Header="{x:Static lang:SporkStrings.ChatHeader}"
+							IsVisible="False" />
+						<TabItem
+							Header="{x:Static lang:SporkStrings.AboutHeader}">
+							<controls:AboutControl
+								Margin="20"
+								CheckUpdateCommand="{Binding CheckUpdateButtonCommand}"
+								VersionInfo="{Binding VersionInfo}"
+								VisitGitHubCommand="{Binding VisitGitHubButtonCommand}"
+								VisitWebSiteCommand="{Binding VisitWebSiteButtonCommand}" />
+						</TabItem>
+					</TabControl>
+				</DockPanel>
+			</Border>
+		</DockPanel>
 		<ctl:SplashContent IsVisible="False" x:Name="_splash"/>
 	</Grid>
 </Window>

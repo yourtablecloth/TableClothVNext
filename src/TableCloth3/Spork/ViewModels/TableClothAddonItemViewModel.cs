@@ -49,7 +49,7 @@ public sealed partial class TableClothAddonItemViewModel : BaseViewModel
 
     partial void OnAddonIdChanged(string value)
     {
-        if (Design.IsDesignMode)
+        if (IsDesignMode)
             return;
 
         AddonIcon = new Bitmap(AssetLoader.Open(new Uri("avares://TableCloth3/Assets/Images/Spork.png")));

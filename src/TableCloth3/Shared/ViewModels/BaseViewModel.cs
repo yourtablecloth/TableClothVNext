@@ -8,9 +8,11 @@ public abstract partial class BaseViewModel : ObservableObject
     public BaseViewModel()
         : base()
     {
-        if (Design.IsDesignMode)
+        if (IsDesignMode)
             PrepareDesignTimePreview();
     }
 
     protected virtual void PrepareDesignTimePreview() { }
+
+    protected bool IsDesignMode => Design.IsDesignMode;
 }

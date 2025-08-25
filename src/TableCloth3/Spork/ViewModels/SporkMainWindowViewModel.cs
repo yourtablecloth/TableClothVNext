@@ -406,7 +406,7 @@ public sealed partial class SporkMainWindowViewModel : BaseViewModel
 	[RelayCommand]
 	private async Task Loaded(CancellationToken cancellationToken = default)
 	{
-		if (Design.IsDesignMode)
+		if (IsDesignMode)
 			return;
 
 		await Refresh(cancellationToken).ConfigureAwait(false);

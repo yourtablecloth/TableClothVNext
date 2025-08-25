@@ -64,7 +64,7 @@ public sealed partial class InstallerProgressWindowViewModel : BaseViewModel
     [RelayCommand]
     private async Task Loaded(CancellationToken cancellationToken = default)
     {
-        if (Design.IsDesignMode)
+        if (IsDesignMode)
             return;
 
         await RunInstallerStepsAsync(cancellationToken).ConfigureAwait(false);

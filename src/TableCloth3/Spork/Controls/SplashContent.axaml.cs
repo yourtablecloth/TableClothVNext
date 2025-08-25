@@ -1,3 +1,4 @@
+using AsyncAwaitBestPractices;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
@@ -16,43 +17,36 @@ public partial class SplashContent : UserControl
         InitializeComponent();
     }
 
-    protected override async void OnLoaded(RoutedEventArgs e)
+    protected override void OnLoaded(RoutedEventArgs e)
     {
         if (IsVisible)
-        {
-            await StartAnimation();
-        }
+            StartAnimation().SafeFireAndForget();
     }
 
-    public Func<Task>? InitializationTask { get; set; }
-
-    protected async override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
 
         if (Design.IsDesignMode)
-        {
-            await StartAnimation();
-        }
+            StartAnimation().SafeFireAndForget();
     }
 
     public async Task StartAnimation()
     {
-        double imageStartOffsetY = -700.0;
-        double textStartOffsetY = -50.0;
-
+        var imageStartOffsetY = -700.0d;
+        var textStartOffsetY = -50.0d;
         var easeOut = new CubicEaseOut();
 
         var imageAnim = new Animation
         {
-            Duration = TimeSpan.FromSeconds(1.5),
+            Duration = TimeSpan.FromSeconds(1.5d),
             FillMode = FillMode.Forward,
             Easing = easeOut,
             Children =
             {
                 new KeyFrame
                 {
-                    Cue = new Cue(0.0),
+                    Cue = new Cue(0d),
                     Setters =
                     {
                         new Setter(TranslateTransform.YProperty, imageStartOffsetY),
@@ -61,11 +55,11 @@ public partial class SplashContent : UserControl
                 },
                 new KeyFrame
                 {
-                    Cue = new Cue(1.0),
+                    Cue = new Cue(1d),
                     Setters =
                     {
-                        new Setter(TranslateTransform.YProperty, 0.0),
-                        new Setter(Visual.OpacityProperty, 1.0)
+                        new Setter(TranslateTransform.YProperty, 0d),
+                        new Setter(Visual.OpacityProperty, 1d)
                     }
                 }
             }
@@ -73,27 +67,27 @@ public partial class SplashContent : UserControl
 
         var textAnim = new Animation
         {
-            Duration = TimeSpan.FromSeconds(1.5),
+            Duration = TimeSpan.FromSeconds(1.5d),
             FillMode = FillMode.Forward,
             Easing = easeOut,
             Children =
             {
                 new KeyFrame
                 {
-                    Cue     = new Cue(0.0),
+                    Cue     = new Cue(0d),
                     Setters =
                     {
                         new Setter(TranslateTransform.YProperty, textStartOffsetY),
-                        new Setter(Visual.OpacityProperty, 0.0)
+                        new Setter(Visual.OpacityProperty, 0d)
                     }
                 },
                 new KeyFrame
                 {
-                    Cue     = new Cue(0.5),
+                    Cue     = new Cue(0.5d),
                     Setters =
                     {
                         new Setter(TranslateTransform.YProperty, textStartOffsetY),
-                        new Setter(Visual.OpacityProperty,      0.0)
+                        new Setter(Visual.OpacityProperty, 0d)
                     }
                 },
                 new KeyFrame
@@ -101,8 +95,8 @@ public partial class SplashContent : UserControl
                     Cue     = new Cue(1.0),
                     Setters =
                     {
-                        new Setter(TranslateTransform.YProperty, 0.0),
-                        new Setter(Visual.OpacityProperty, 1.0)
+                        new Setter(TranslateTransform.YProperty, 0d),
+                        new Setter(Visual.OpacityProperty, 1d)
                     }
                 }
             }
@@ -110,35 +104,21 @@ public partial class SplashContent : UserControl
 
         await Task.WhenAll(imageAnim.RunAsync(image), textAnim.RunAsync(text));
 
-        if (InitializationTask is not null)
-        {
-            await InitializationTask();
-
-            InitializationTask = null;
-        }
-        else
-        {
-            if (!Debugger.IsAttached)
-            {
-                await Task.Delay(1500);
-            }
-        }
-
         var fadeOutAnim = new Animation
         {
             FillMode = FillMode.Forward,
-            Duration = TimeSpan.FromSeconds(0.5),
+            Duration = TimeSpan.FromSeconds(0.5d),
             Children =
                 {
                     new KeyFrame
                     {
-                        Cue = new Cue(0.0),
-                        Setters = { new Setter(Visual.OpacityProperty, 1.0) }
+                        Cue = new Cue(0d),
+                        Setters = { new Setter(Visual.OpacityProperty, 1d) }
                     },
                     new KeyFrame
                     {
                         Cue = new Cue(1.0),
-                        Setters = { new Setter(Visual.OpacityProperty, 0.0) }
+                        Setters = { new Setter(Visual.OpacityProperty, 0d) }
                     }
                 }
         };
@@ -146,8 +126,6 @@ public partial class SplashContent : UserControl
         await Task.WhenAll(fadeOutAnim.RunAsync(image), fadeOutAnim.RunAsync(text), fadeOutAnim.RunAsync(this));
 
         if (Parent is Panel panel)
-        {
             panel.Children.Remove(this);
-        }
     }
 }

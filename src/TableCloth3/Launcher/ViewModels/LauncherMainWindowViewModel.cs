@@ -144,7 +144,7 @@ public sealed partial class LauncherMainWindowViewModel : BaseViewModel
     [RelayCommand]
     private async Task Loaded(CancellationToken cancellationToken = default)
     {
-        if (Design.IsDesignMode)
+        if (IsDesignMode)
             return;
 
         Loading = true;

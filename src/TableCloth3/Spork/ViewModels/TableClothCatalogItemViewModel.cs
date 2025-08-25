@@ -33,7 +33,7 @@ public sealed partial class TableClothCatalogItemViewModel : BaseViewModel
 
     partial void OnServiceIdChanged(string value)
     {
-        if (Design.IsDesignMode)
+        if (IsDesignMode)
             return;
 
         var targetPath = _catalogService.GetLocalImagePath(value);
