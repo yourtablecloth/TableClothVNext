@@ -1,6 +1,10 @@
-﻿using Avalonia;
+﻿using AsyncAwaitBestPractices;
+using Avalonia;
 using Lemon.Hosting.AvaloniauiDesktop;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting.Server;
+using Microsoft.AspNetCore.Hosting.Server.Features;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -45,7 +49,16 @@ public static class Program
 		using var app = builder.Build();
         app.TryMapMcpServer();
 
-		app.RunAvaloniauiApplication(args).GetAwaiter().GetResult();
+        app.Lifetime.ApplicationStarted.Register(() =>
+        {
+            var server = app.Services.GetRequiredService<IServer>();
+            var addressResolver = server.Features.GetRequiredFeature<IServerAddressesFeature>();
+
+            var webHostManager = app.Services.GetRequiredService<SecondaryWebHostManager>();
+            webHostManager.StartSecondaryWebHost(addressResolver.Addresses.First()).SafeFireAndForget();
+        });
+
+        app.RunAvaloniauiApplication(args).GetAwaiter().GetResult();
 	}
 
 	// This method is used by both AppHost Avalonia runtime and the Avalonia Designer.

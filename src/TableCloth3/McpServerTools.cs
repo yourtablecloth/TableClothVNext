@@ -45,7 +45,7 @@ internal static class McpServerTools
         {
             mcpServerBuilder.WithHttpTransport();
             webAppBuilder.WebHost.UseUrls("http://127.0.0.1:0;http://[::1]:0");
-            // To do: Create secondary web application with YARP for 29400/tcp
+            builder.Services.AddSingleton<SecondaryWebHostManager>();
         }
         else
             mcpServerBuilder.WithStdioServerTransport();
