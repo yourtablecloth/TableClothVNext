@@ -7,7 +7,9 @@
 		xmlns:controls="clr-namespace:TableCloth3.Shared.Controls"
 		xmlns:ui="clr-namespace:Avalonia.Controls;assembly=Avalonia.Controls"
 		mc:Ignorable="d"
-		Width="500"
+		Width="520"
+		MinWidth="520"
+		MaxWidth="600"
 		CanResize="False"
 		SizeToContent="Height"
 		x:Class="TableCloth3.Launcher.Windows.LauncherMainWindow"
@@ -23,81 +25,224 @@
 			<InvokeCommandAction Command="{Binding LoadedCommand}" />
 		</RoutedEventTriggerBehavior>
 	</Interaction.Behaviors>
-	<Grid Margin="20">
+	
+	<Window.Styles>
+		<Style Selector="CheckBox">
+			<Setter Property="Margin" Value="0,8" />
+			<Setter Property="FontSize" Value="14" />
+		</Style>
+		<Style Selector="CheckBox ContentPresenter">
+			<Setter Property="RecognizesAccessKey" Value="True" />
+		</Style>
+		<Style Selector="Button">
+			<Setter Property="Padding" Value="16,8" />
+			<Setter Property="MinHeight" Value="32" />
+			<Setter Property="FontSize" Value="13" />
+		</Style>
+		<Style Selector="Button.primary">
+			<Setter Property="Background" Value="{DynamicResource AccentButtonBackground}" />
+			<Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}" />
+			<Setter Property="BorderBrush" Value="{DynamicResource AccentButtonBorderBrush}" />
+		</Style>
+		<Style Selector="Button.primary:pointerover">
+			<Setter Property="Background" Value="{DynamicResource AccentButtonBackgroundPointerOver}" />
+		</Style>
+		<Style Selector="Button.secondary">
+			<Setter Property="Background" Value="{DynamicResource ButtonBackground}" />
+			<Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderBrush}" />
+		</Style>
+	</Window.Styles>
+	
+	<Grid Margin="24">
 		<DockPanel>
-			<Grid Margin="0,20,0,0" DockPanel.Dock="Bottom">
+			<!-- Action Buttons -->
+			<Grid Margin="0,24,0,0" DockPanel.Dock="Bottom">
 				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="50*" />
-					<ColumnDefinition Width="50*" />
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="Auto" />
 				</Grid.ColumnDefinitions>
-				<StackPanel Grid.Column="0" Orientation="Horizontal">
-					<Button Content="{x:Static lang:LauncherStrings.AboutApp}" Command="{Binding AboutButtonCommand}" />
-				</StackPanel>
-				<StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-					<Button Content="{x:Static lang:LauncherStrings.LaunchSandbox}" Command="{Binding LaunchButtonCommand}" />
-					<Button Content="{x:Static lang:LauncherStrings.CloseApp}" Command="{Binding CloseButtonCommand}" Margin="10,0,0,0" />
+				
+				<Button Grid.Column="0" 
+				        Content="{x:Static lang:LauncherStrings.AboutApp}" 
+				        Command="{Binding AboutButtonCommand}"
+				        Classes="secondary" />
+				
+				<StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="12">
+					<Button Content="{x:Static lang:LauncherStrings.LaunchSandbox}" 
+					        Command="{Binding LaunchButtonCommand}"
+					        Classes="primary"
+					        MinWidth="120" />
+					<Button Content="{x:Static lang:LauncherStrings.CloseApp}" 
+					        Command="{Binding CloseButtonCommand}"
+					        Classes="secondary" />
 				</StackPanel>
 			</Grid>
 			
-			<!-- MCP 서버 상태 인디케이터 -->
-			<Border DockPanel.Dock="Bottom" Margin="0,10,0,10" Padding="10" 
-			        Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
-			        CornerRadius="5">
-				<StackPanel Orientation="Horizontal" Spacing="10">
-					<!-- 상태 인디케이터 -->
-					<Ellipse Width="12" Height="12" VerticalAlignment="Center">
-						<Ellipse.Fill>
-							<SolidColorBrush>
-								<SolidColorBrush.Color>
-									<MultiBinding Converter="{StaticResource McpServerStatusToColorConverter}">
-										<Binding Path="IsMcpServerHealthy" />
-										<Binding Path="McpServerStatusChecking" />
-									</MultiBinding>
-								</SolidColorBrush.Color>
-							</SolidColorBrush>
-						</Ellipse.Fill>
-					</Ellipse>
+			<!-- MCP Server Status Section -->
+			<Border DockPanel.Dock="Bottom" 
+			        Margin="0,16,0,16" 
+			        Padding="16" 
+			        Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+			        BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+			        BorderThickness="1"
+			        CornerRadius="8"
+			        BoxShadow="0 1 3 0 #0F000000">
+				<Grid>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
 					
-					<!-- 상태 텍스트 -->
-					<TextBlock Text="{Binding McpServerStatusText}" 
-					          VerticalAlignment="Center"
-					          FontSize="12"
-					          Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
+					<!-- Header -->
+					<TextBlock Grid.Row="0" 
+					          Text="MCP 서버 연결 상태"
+					          FontSize="14"
+					          FontWeight="SemiBold"
+					          Margin="0,0,0,8"
+					          Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
 					
-					<!-- 새로고침 버튼 -->
-					<Button Content="다시 조회" 
-					        Command="{Binding CheckMcpServerStatusCommand}"
-					        IsEnabled="{Binding McpServerStatusChecking, Converter={x:Static BoolConverters.Not}}"
-					        Margin="10"
-					        VerticalAlignment="Center"
-					        ToolTip.Tip="MCP 서버 상태 새로고침" />
-					        
-					<!-- 로딩 인디케이터 -->
-					<controls:ProgressRing Width="16" Height="16" 
-					                      VerticalAlignment="Center"
-					                      IsVisible="{Binding McpServerStatusChecking}" />
-				</StackPanel>
+					<!-- Status Content -->
+					<Grid Grid.Row="1">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
+						</Grid.ColumnDefinitions>
+						
+						<!-- Status Indicator -->
+						<Border Grid.Column="0"
+						        Width="16" Height="16" 
+						        VerticalAlignment="Center"
+						        CornerRadius="8"
+						        Margin="0,0,12,0">
+							<Border.Background>
+								<SolidColorBrush>
+									<SolidColorBrush.Color>
+										<MultiBinding Converter="{StaticResource McpServerStatusToColorConverter}">
+											<Binding Path="IsMcpServerHealthy" />
+											<Binding Path="McpServerStatusChecking" />
+										</MultiBinding>
+									</SolidColorBrush.Color>
+								</SolidColorBrush>
+							</Border.Background>
+						</Border>
+						
+						<!-- Status Text -->
+						<TextBlock Grid.Column="1"
+						          Text="{Binding McpServerStatusText}" 
+						          VerticalAlignment="Center"
+						          FontSize="13"
+						          TextWrapping="Wrap"
+						          Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+						
+						<!-- Loading Indicator -->
+						<controls:ProgressRing Grid.Column="2"
+						                      Width="18" Height="18" 
+						                      VerticalAlignment="Center"
+						                      Margin="8,0"
+						                      IsVisible="{Binding McpServerStatusChecking}" />
+						
+						<!-- Refresh Button -->
+						<Button Grid.Column="3"
+						        Content="새로고침" 
+						        Command="{Binding CheckMcpServerStatusCommand}"
+						        IsEnabled="{Binding McpServerStatusChecking, Converter={x:Static BoolConverters.Not}}"
+						        VerticalAlignment="Center"
+						        Padding="12,4"
+						        FontSize="12"
+						        Classes="secondary"
+						        ToolTip.Tip="MCP 서버 상태 새로고침" />
+					</Grid>
+				</Grid>
 			</Border>
 			
-			<Border>
-				<StackPanel Spacing="0,10">
-					<StackPanel.Styles>
-						<Style Selector="CheckBox ContentPresenter">
-							<Setter Property="RecognizesAccessKey" Value="True" />
-						</Style>
-					</StackPanel.Styles>
-					<CheckBox Content="{x:Static lang:LauncherStrings.UseMicrophone}" IsChecked="{Binding UseMicrophone}" />
-					<CheckBox Content="{x:Static lang:LauncherStrings.UseWebCamera}" IsChecked="{Binding UseWebCamera}" />
-					<CheckBox Content="{x:Static lang:LauncherStrings.SharePrinters}" IsChecked="{Binding SharePrinters}" />
-					<CheckBox Content="{x:Static lang:LauncherStrings.MountNpkiFolders}" IsChecked="{Binding MountNpkiFolders}" />
-					<StackPanel Orientation="Horizontal">
-						<CheckBox Content="{x:Static lang:LauncherStrings.MountSpecificFolders}" IsChecked="{Binding MountSpecificFolders}" />
-						<Button Margin="10,0,0,0" Command="{Binding ManageFolderButtonCommand}" Content="{x:Static lang:LauncherStrings.ManageFolders}" IsEnabled="{Binding MountSpecificFolders}" />
-					</StackPanel>
+			<!-- Main Configuration Section -->
+			<Border Padding="0" CornerRadius="8">
+				<StackPanel Spacing="4">
+					<TextBlock Text="샌드박스 설정"
+					          FontSize="16"
+					          FontWeight="SemiBold"
+					          Margin="0,0,0,16"
+					          Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+					
+					<!-- Hardware Access -->
+					<Border Padding="16" 
+					        Background="{DynamicResource SubtleFillColorTransparentBrush}"
+					        BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}"
+					        BorderThickness="0,0,0,1"
+					        Margin="0,0,0,8">
+						<StackPanel Spacing="4">
+							<TextBlock Text="하드웨어 접근"
+							          FontSize="13"
+							          FontWeight="Medium"
+							          Margin="0,0,0,8"
+							          Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+							<CheckBox Content="{x:Static lang:LauncherStrings.UseMicrophone}" 
+							         IsChecked="{Binding UseMicrophone}" />
+							<CheckBox Content="{x:Static lang:LauncherStrings.UseWebCamera}" 
+							         IsChecked="{Binding UseWebCamera}" />
+							<CheckBox Content="{x:Static lang:LauncherStrings.SharePrinters}" 
+							         IsChecked="{Binding SharePrinters}" />
+						</StackPanel>
+					</Border>
+					
+					<!-- Folder Access -->
+					<Border Padding="16" 
+					        Background="{DynamicResource SubtleFillColorTransparentBrush}">
+						<StackPanel Spacing="4">
+							<TextBlock Text="폴더 접근"
+							          FontSize="13"
+							          FontWeight="Medium"
+							          Margin="0,0,0,8"
+							          Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+							<CheckBox Content="{x:Static lang:LauncherStrings.MountNpkiFolders}" 
+							         IsChecked="{Binding MountNpkiFolders}" />
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="Auto" />
+									<ColumnDefinition Width="*" />
+								</Grid.ColumnDefinitions>
+								<CheckBox Grid.Column="0"
+								         Content="{x:Static lang:LauncherStrings.MountSpecificFolders}" 
+								         IsChecked="{Binding MountSpecificFolders}" />
+								<Button Grid.Column="1"
+								        Margin="16,0,0,0" 
+								        Command="{Binding ManageFolderButtonCommand}" 
+								        Content="{x:Static lang:LauncherStrings.ManageFolders}" 
+								        IsEnabled="{Binding MountSpecificFolders}"
+								        Classes="secondary"
+								        HorizontalAlignment="Left"
+								        Padding="12,4"
+								        FontSize="12" />
+							</Grid>
+						</StackPanel>
+					</Border>
 				</StackPanel>
 			</Border>
 		</DockPanel>
 		
-		<controls:ProgressRing HorizontalAlignment="Right" VerticalAlignment="Top" IsVisible="{Binding Loading}" />
+		<!-- Loading Overlay -->
+		<Grid Background="#80000000" 
+		      IsVisible="{Binding Loading}"
+		      ZIndex="100">
+			<Border Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+			        BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+			        BorderThickness="1"
+			        CornerRadius="8"
+			        Padding="24"
+			        HorizontalAlignment="Center"
+			        VerticalAlignment="Center"
+			        BoxShadow="0 4 12 0 #20000000">
+				<StackPanel Orientation="Horizontal" Spacing="16">
+					<controls:ProgressRing Width="24" Height="24" />
+					<TextBlock Text="{x:Static lang:LauncherStrings.LoadingMessage}"
+					          VerticalAlignment="Center"
+					          FontSize="14"
+					          Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+				</StackPanel>
+			</Border>
+		</Grid>
 	</Grid>
 </Window>
