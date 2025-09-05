@@ -16,7 +16,7 @@ using TableCloth3.Shared.ViewModels;
 
 namespace TableCloth3.Launcher.ViewModels;
 
-public sealed partial class LauncherMainWindowViewModel : BaseViewModel
+public sealed partial class LauncherMainWindowViewModel : BaseViewModel, IDisposable
 {
     [ActivatorUtilitiesConstructor]
     public LauncherMainWindowViewModel(
@@ -26,7 +26,8 @@ public sealed partial class LauncherMainWindowViewModel : BaseViewModel
         WindowsSandboxComposer windowsSandboxComposer,
         TableClothCatalogService tableClothCatalogService,
         ProcessManagerFactory processManagerFactory,
-        AvaloniaWindowManager windowManager)
+        AvaloniaWindowManager windowManager,
+        McpServerStatusService mcpServerStatusService)
     {
         _messenger = messenger;
         _viewModelManager = viewModelManager;
@@ -35,6 +36,10 @@ public sealed partial class LauncherMainWindowViewModel : BaseViewModel
         _tableClothCatalogService = tableClothCatalogService;
         _processManagerFactory = processManagerFactory;
         _windowManager = windowManager;
+        _mcpServerStatusService = mcpServerStatusService;
+
+        // 서버 상태 변경 이벤트 구독
+        _mcpServerStatusService.ServerStatusChanged += OnServerStatusChanged;
     }
 
     public LauncherMainWindowViewModel() { }
@@ -46,6 +51,9 @@ public sealed partial class LauncherMainWindowViewModel : BaseViewModel
     private readonly TableClothCatalogService _tableClothCatalogService = default!;
     private readonly ProcessManagerFactory _processManagerFactory = default!;
     private readonly AvaloniaWindowManager _windowManager = default!;
+    private readonly McpServerStatusService _mcpServerStatusService = default!;
+
+    private DispatcherTimer? _statusCheckTimer;
 
     public sealed record class ShowDisclaimerWindowMessage();
 
@@ -94,6 +102,61 @@ public sealed partial class LauncherMainWindowViewModel : BaseViewModel
 
     [ObservableProperty]
     private bool _loading = false;
+
+    // MCP 서버 상태 관련 프로퍼티들을 직접 구현
+    private bool _isMcpServerHealthy = false;
+    public bool IsMcpServerHealthy
+    {
+        get => _isMcpServerHealthy;
+        set => SetProperty(ref _isMcpServerHealthy, value);
+    }
+
+    private string _mcpServerStatusText = "MCP 서버 상태 확인 중...";
+    public string McpServerStatusText
+    {
+        get => _mcpServerStatusText;
+        set => SetProperty(ref _mcpServerStatusText, value);
+    }
+
+    private bool _mcpServerStatusChecking = false;
+    public bool McpServerStatusChecking
+    {
+        get => _mcpServerStatusChecking;
+        set => SetProperty(ref _mcpServerStatusChecking, value);
+    }
+
+    private void OnServerStatusChanged(object? sender, ServerStatusChangedEventArgs e)
+    {
+        // UI 스레드에서 상태 업데이트
+        Dispatcher.UIThread.Post(() => UpdateServerStatus(e.Status));
+    }
+
+    private void UpdateServerStatus(McpServerStatus status)
+    {
+        IsMcpServerHealthy = status.IsHealthy;
+
+        if (status.IsHealthy)
+        {
+            McpServerStatusText = $"MCP 서버 연결됨 (포트: {status.McpServerPort}, 프록시: {status.YarpProxyPort})";
+        }
+        else
+        {
+            var statusParts = new List<string>();
+
+            if (!status.IsMcpServerRunning)
+                statusParts.Add("MCP 서버 미연결");
+
+            if (status.YarpProxyStarting)
+                statusParts.Add("프록시 서버 시작 중");
+            else if (!status.IsYarpProxyRunning)
+                statusParts.Add("프록시 서버 미연결");
+
+            if (!string.IsNullOrEmpty(status.LastError))
+                statusParts.Add($"오류: {status.LastError}");
+
+            McpServerStatusText = statusParts.Any() ? string.Join(", ", statusParts) : "MCP 서버 연결 실패";
+        }
+    }
 
     [RelayCommand]
     private void AboutButton()
@@ -152,8 +215,71 @@ public sealed partial class LauncherMainWindowViewModel : BaseViewModel
         await Task.WhenAll([
             _tableClothCatalogService.DownloadCatalogAsync(cancellationToken),
             _tableClothCatalogService.DownloadImagesAsync(cancellationToken),
+            CheckMcpServerStatus(cancellationToken),
         ]);
 
         Loading = false;
+
+        // MCP 서버 상태를 주기적으로 확인 (서버가 완전히 시작되지 않았을 경우를 대비)
+        StartPeriodicStatusCheck();
+    }
+
+    [RelayCommand]
+    private async Task CheckMcpServerStatus(CancellationToken cancellationToken = default)
+    {
+        if (McpServerStatusChecking)
+            return;
+
+        McpServerStatusChecking = true;
+
+        try
+        {
+            var status = await _mcpServerStatusService.CheckStatusAsync(cancellationToken);
+            UpdateServerStatus(status);
+        }
+        catch (Exception ex)
+        {
+            IsMcpServerHealthy = false;
+            McpServerStatusText = $"상태 확인 실패: {ex.Message}";
+        }
+        finally
+        {
+            McpServerStatusChecking = false;
+        }
+    }
+
+    private void StartPeriodicStatusCheck()
+    {
+        // 서버 시작 초기에는 더 자주 확인 (10초마다), 이후 30초마다 확인
+        _statusCheckTimer = new DispatcherTimer
+        {
+            Interval = TimeSpan.FromSeconds(10)
+        };
+
+        var checkCount = 0;
+        _statusCheckTimer.Tick += async (sender, e) =>
+        {
+            await CheckMcpServerStatus();
+            checkCount++;
+
+            // 6번 확인 후(1분 후) 간격을 30초로 변경
+            if (checkCount >= 6)
+            {
+                _statusCheckTimer.Interval = TimeSpan.FromSeconds(30);
+            }
+        };
+
+        _statusCheckTimer.Start();
+    }
+
+    public void Dispose()
+    {
+        if (_mcpServerStatusService != null)
+        {
+            _mcpServerStatusService.ServerStatusChanged -= OnServerStatusChanged;
+        }
+
+        _statusCheckTimer?.Stop();
+        _statusCheckTimer = null;
     }
 }

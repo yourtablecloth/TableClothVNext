@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using System.Runtime.Versioning;
 using TableCloth3.Help;
 using TableCloth3.Launcher;
@@ -51,11 +52,52 @@ public static class Program
 
         app.Lifetime.ApplicationStarted.Register(() =>
         {
-            var server = app.Services.GetRequiredService<IServer>();
-            var addressResolver = server.Features.GetRequiredFeature<IServerAddressesFeature>();
-
-            var webHostManager = app.Services.GetRequiredService<SecondaryWebHostManager>();
-            webHostManager.StartSecondaryWebHost(addressResolver.Addresses.First()).SafeFireAndForget();
+            var logger = app.Services.GetRequiredService<ILogger<SecondaryWebHostManager>>();
+            
+            try
+            {
+                var server = app.Services.GetRequiredService<IServer>();
+                var addressResolver = server.Features.GetRequiredFeature<IServerAddressesFeature>();
+                
+                var firstAddress = addressResolver.Addresses.FirstOrDefault();
+                if (!string.IsNullOrEmpty(firstAddress))
+                {
+                    logger.LogInformation("MCP 서버가 {Address}에서 시작되었습니다.", firstAddress);
+                    
+                    var webHostManager = app.Services.GetRequiredService<SecondaryWebHostManager>();
+                    
+                    // YARP 프록시 서버 시작
+                    Task.Run(async () =>
+                    {
+                        try
+                        {
+                            logger.LogInformation("YARP 프록시 서버를 시작하는 중... (대상: {TargetAddress})", firstAddress);
+                            var proxyApp = await webHostManager.StartSecondaryWebHost(firstAddress);
+                            
+                            if (proxyApp != null)
+                            {
+                                logger.LogInformation("YARP 프록시 서버가 http://127.0.0.1:29400에서 성공적으로 시작되었습니다.");
+                            }
+                            else
+                            {
+                                logger.LogError("YARP 프록시 서버 시작에 실패했습니다.");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            logger.LogError(ex, "YARP 프록시 서버 시작 중 오류가 발생했습니다.");
+                        }
+                    }).SafeFireAndForget();
+                }
+                else
+                {
+                    logger.LogWarning("MCP 서버 주소를 찾을 수 없습니다.");
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "서버 시작 중 오류가 발생했습니다.");
+            }
         });
 
         app.RunAvaloniauiApplication(args).GetAwaiter().GetResult();

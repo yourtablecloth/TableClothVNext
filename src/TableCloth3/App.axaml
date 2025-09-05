@@ -1,7 +1,8 @@
 <Application x:Class="TableCloth3.App"
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:sty="clr-namespace:TableCloth3.Styling">
+             xmlns:sty="clr-namespace:TableCloth3.Styling"
+             xmlns:converters="clr-namespace:TableCloth3.Shared.Converters">
     <Application.Resources>
         <!--H: 358, S: 68: V: 84-->
         <Color x:Key="AccentColor">#D64549</Color>
@@ -11,6 +12,9 @@
         <FontFamily x:Key="ContentControlThemeFontFamily">avares://TableCloth3/Assets/Fonts#SUITE</FontFamily>
 
         <FontFamily x:Key="FixedFontFamily">avares://TableCloth3/Assets/Fonts#Roboto Mono</FontFamily>
+        
+        <!-- Converters -->
+        <converters:McpServerStatusToColorConverter x:Key="McpServerStatusToColorConverter" />
     </Application.Resources>
     
     <Application.Styles>

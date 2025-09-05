@@ -38,6 +38,47 @@
 					<Button Content="{x:Static lang:LauncherStrings.CloseApp}" Command="{Binding CloseButtonCommand}" Margin="10,0,0,0" />
 				</StackPanel>
 			</Grid>
+			
+			<!-- MCP 서버 상태 인디케이터 -->
+			<Border DockPanel.Dock="Bottom" Margin="0,10,0,10" Padding="10" 
+			        Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+			        CornerRadius="5">
+				<StackPanel Orientation="Horizontal" Spacing="10">
+					<!-- 상태 인디케이터 -->
+					<Ellipse Width="12" Height="12" VerticalAlignment="Center">
+						<Ellipse.Fill>
+							<SolidColorBrush>
+								<SolidColorBrush.Color>
+									<MultiBinding Converter="{StaticResource McpServerStatusToColorConverter}">
+										<Binding Path="IsMcpServerHealthy" />
+										<Binding Path="McpServerStatusChecking" />
+									</MultiBinding>
+								</SolidColorBrush.Color>
+							</SolidColorBrush>
+						</Ellipse.Fill>
+					</Ellipse>
+					
+					<!-- 상태 텍스트 -->
+					<TextBlock Text="{Binding McpServerStatusText}" 
+					          VerticalAlignment="Center"
+					          FontSize="12"
+					          Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
+					
+					<!-- 새로고침 버튼 -->
+					<Button Content="다시 조회" 
+					        Command="{Binding CheckMcpServerStatusCommand}"
+					        IsEnabled="{Binding McpServerStatusChecking, Converter={x:Static BoolConverters.Not}}"
+					        Margin="10"
+					        VerticalAlignment="Center"
+					        ToolTip.Tip="MCP 서버 상태 새로고침" />
+					        
+					<!-- 로딩 인디케이터 -->
+					<controls:ProgressRing Width="16" Height="16" 
+					                      VerticalAlignment="Center"
+					                      IsVisible="{Binding McpServerStatusChecking}" />
+				</StackPanel>
+			</Border>
+			
 			<Border>
 				<StackPanel Spacing="0,10">
 					<StackPanel.Styles>

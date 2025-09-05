@@ -65,6 +65,7 @@ internal static class SharedHostExtensions
         builder.Services.AddSingleton<AvaloniaWindowManager>();
 
         builder.Services.AddSingleton<ProcessManagerFactory>();
+        builder.Services.AddSingleton<McpServerStatusService>();
 
         builder.Services.AddHttpClient(CatalogHttpClient, client =>
         {

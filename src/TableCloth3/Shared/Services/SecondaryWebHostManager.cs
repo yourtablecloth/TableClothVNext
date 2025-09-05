@@ -15,10 +15,16 @@ public sealed class SecondaryWebHostManager : IDisposable
         _configuration = configuration;
     }
 
+    // 상태 변경 이벤트
+    public event EventHandler<SecondaryWebHostStatusChangedEventArgs>? StatusChanged;
+
     public async Task<WebApplication?> StartSecondaryWebHost(string targetAddress, CancellationToken cancellationToken = default)
     {
         if (_app != null)
             return _app;
+
+        IsStarting = true;
+        OnStatusChanged(SecondaryWebHostStatus.Starting);
 
         try
         {
@@ -72,13 +78,22 @@ public sealed class SecondaryWebHostManager : IDisposable
 
             await webApp.StartAsync(cancellationToken).ConfigureAwait(false);
             _lastException = default;
+            IsStarting = false;
+            OnStatusChanged(SecondaryWebHostStatus.Started);
             return webApp;
         }
         catch (Exception ex)
         {
             _lastException = ex;
+            IsStarting = false;
+            OnStatusChanged(SecondaryWebHostStatus.Failed);
             return default;
         }
+    }
+
+    private void OnStatusChanged(SecondaryWebHostStatus status)
+    {
+        StatusChanged?.Invoke(this, new SecondaryWebHostStatusChangedEventArgs(status, _lastException));
     }
 
     private IConfiguration _configuration = default!;
@@ -88,6 +103,7 @@ public sealed class SecondaryWebHostManager : IDisposable
     private Exception? _lastException;
 
     public Exception? LastException => _lastException;
+    public bool IsStarting { get; private set; }
 
     private void Dispose(bool disposing)
     {
@@ -97,6 +113,7 @@ public sealed class SecondaryWebHostManager : IDisposable
             {
                 ((IDisposable?)_app)?.Dispose();
                 _app = null;
+                OnStatusChanged(SecondaryWebHostStatus.Stopped);
             }
         }
     }
@@ -109,4 +126,25 @@ public sealed class SecondaryWebHostManager : IDisposable
         Dispose(true);
         GC.SuppressFinalize(this);
     }
+}
+
+public enum SecondaryWebHostStatus
+{
+    NotStarted,
+    Starting,
+    Started,
+    Failed,
+    Stopped
+}
+
+public sealed class SecondaryWebHostStatusChangedEventArgs : EventArgs
+{
+    public SecondaryWebHostStatusChangedEventArgs(SecondaryWebHostStatus status, Exception? exception = null)
+    {
+        Status = status;
+        Exception = exception;
+    }
+
+    public SecondaryWebHostStatus Status { get; }
+    public Exception? Exception { get; }
 }
