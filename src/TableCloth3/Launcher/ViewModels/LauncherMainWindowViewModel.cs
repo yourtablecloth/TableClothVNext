@@ -1,5 +1,6 @@
 ﻿using AsyncAwaitBestPractices;
 using Avalonia.Controls;
+using Avalonia.Input.Platform;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -7,6 +8,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Text.Json;
 using System.Threading.Tasks;
 using TableCloth3.Launcher.Models;
 using TableCloth3.Launcher.Services;
@@ -125,6 +127,9 @@ public sealed partial class LauncherMainWindowViewModel : BaseViewModel, IDispos
         set => SetProperty(ref _mcpServerStatusChecking, value);
     }
 
+    // MCP 설정 관련 프로퍼티
+    private McpServerStatus? _currentServerStatus;
+
     private void OnServerStatusChanged(object? sender, ServerStatusChangedEventArgs e)
     {
         // UI 스레드에서 상태 업데이트
@@ -133,7 +138,11 @@ public sealed partial class LauncherMainWindowViewModel : BaseViewModel, IDispos
 
     private void UpdateServerStatus(McpServerStatus status)
     {
+        _currentServerStatus = status;
         IsMcpServerHealthy = status.IsHealthy;
+
+        // Command의 CanExecute 상태 업데이트
+        CopyMcpConfigCommand.NotifyCanExecuteChanged();
 
         if (status.IsHealthy)
         {
@@ -156,6 +165,132 @@ public sealed partial class LauncherMainWindowViewModel : BaseViewModel, IDispos
 
             McpServerStatusText = statusParts.Any() ? string.Join(", ", statusParts) : "MCP 서버 연결 실패";
         }
+    }
+
+    [RelayCommand(CanExecute = nameof(CanCopyMcpConfig))]
+    private async Task CopyMcpConfig(CancellationToken cancellationToken = default)
+    {
+        if (_currentServerStatus == null || !_currentServerStatus.IsHealthy)
+            return;
+
+        try
+        {
+            var config = GenerateMcpConfigJson(_currentServerStatus);
+            
+            var mainWindow = _windowManager.GetMainAvaloniaWindow();
+            var clipboard = TopLevel.GetTopLevel(mainWindow)?.Clipboard;
+            if (clipboard != null)
+            {
+                await clipboard.SetTextAsync(config);
+                
+                // 성공 메시지 (간단한 토스트 형태로 상태 텍스트 임시 변경)
+                var originalText = McpServerStatusText;
+                McpServerStatusText = "MCP 설정이 클립보드에 복사되었습니다!";
+                
+                // 2초 후 원래 텍스트로 복원
+                _ = Task.Delay(2000, cancellationToken).ContinueWith(_ =>
+                {
+                    Dispatcher.UIThread.Post(() => McpServerStatusText = originalText);
+                }, cancellationToken);
+            }
+        }
+        catch (Exception ex)
+        {
+            var originalText = McpServerStatusText;
+            McpServerStatusText = $"설정 복사 실패: {ex.Message}";
+            
+            // 3초 후 원래 텍스트로 복원
+            _ = Task.Delay(3000, cancellationToken).ContinueWith(_ =>
+            {
+                Dispatcher.UIThread.Post(() => McpServerStatusText = originalText);
+            }, cancellationToken);
+        }
+    }
+
+    private bool CanCopyMcpConfig()
+    {
+        return _currentServerStatus?.IsHealthy == true;
+    }
+
+    private string GenerateMcpConfigJson(McpServerStatus status)
+    {
+        // 현재 실행 중인 애플리케이션 경로 기준으로 MCP 서버 실행 파일 경로 추정
+        var currentDir = Path.GetDirectoryName(Environment.ProcessPath) ?? Environment.CurrentDirectory;
+        var mcpServerPath = Path.Combine(currentDir, "mcp-server");
+        
+        // Claude Desktop용 설정 (Windows)
+        var claudeConfig = new
+        {
+            mcpServers = new Dictionary<string, object>
+            {
+                ["tablecloth"] = new
+                {
+                    command = "node",
+                    args = new[] { Path.Combine(mcpServerPath, "dist", "index.js") },
+                    env = new Dictionary<string, string>
+                    {
+                        ["TABLECLOTH_PROXY_URL"] = $"http://localhost:{status.YarpProxyPort}"
+                    }
+                }
+            }
+        };
+
+        // VS Code용 설정도 함께 제공
+        var vscodeConfig = new
+        {
+            command = "node",
+            args = new[] { Path.Combine(mcpServerPath, "dist", "index.js") },
+            env = new Dictionary<string, string>
+            {
+                ["TABLECLOTH_PROXY_URL"] = $"http://localhost:{status.YarpProxyPort}"
+            }
+        };
+
+        var fullConfig = new
+        {
+            // Claude Desktop 설정 (claude_desktop_config.json)
+            ClaudeDesktop = claudeConfig,
+            
+            // VS Code 설정 (settings.json의 mcp 섹션)
+            VSCode = new
+            {
+                mcp = new
+                {
+                    servers = new Dictionary<string, object>
+                    {
+                        ["tablecloth"] = vscodeConfig
+                    }
+                }
+            },
+            
+            // 설정 위치 안내
+            Instructions = new
+            {
+                ClaudeDesktop = new
+                {
+                    ConfigFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Claude", "claude_desktop_config.json"),
+                    Description = "Claude Desktop 설정 파일에 위의 'ClaudeDesktop' 내용을 복사하세요."
+                },
+                VSCode = new
+                {
+                    ConfigFile = "VS Code settings.json",
+                    Description = "VS Code 설정에서 위의 'VSCode' 내용을 추가하세요."
+                },
+                McpServerPath = new
+                {
+                    Path = mcpServerPath,
+                    Description = "MCP 서버가 설치된 경로입니다. 실제 경로와 다를 수 있습니다."
+                }
+            }
+        };
+
+        var options = new JsonSerializerOptions
+        {
+            WriteIndented = true,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        };
+
+        return JsonSerializer.Serialize(fullConfig, options);
     }
 
     [RelayCommand]
