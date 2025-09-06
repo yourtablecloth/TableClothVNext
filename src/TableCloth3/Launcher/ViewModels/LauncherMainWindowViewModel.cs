@@ -185,7 +185,7 @@ public sealed partial class LauncherMainWindowViewModel : BaseViewModel, IDispos
                 
                 // 성공 메시지 (간단한 토스트 형태로 상태 텍스트 임시 변경)
                 var originalText = McpServerStatusText;
-                McpServerStatusText = "MCP 설정이 클립보드에 복사되었습니다!";
+                McpServerStatusText = "Claude Desktop 설정이 클립보드에 복사되었습니다!";
                 
                 // 2초 후 원래 텍스트로 복원
                 _ = Task.Delay(2000, cancellationToken).ContinueWith(_ =>
@@ -216,70 +216,21 @@ public sealed partial class LauncherMainWindowViewModel : BaseViewModel, IDispos
     {
         // 현재 실행 중인 애플리케이션 경로 기준으로 MCP 서버 실행 파일 경로 추정
         var currentDir = Path.GetDirectoryName(Environment.ProcessPath) ?? Environment.CurrentDirectory;
-        var mcpServerPath = Path.Combine(currentDir, "mcp-server");
+        var mcpServerPath = Path.Combine(currentDir, "mcp-server", "dist", "index.js");
         
-        // Claude Desktop용 설정 (Windows)
-        var claudeConfig = new
+        // Claude Desktop용 설정만 생성
+        var config = new
         {
             mcpServers = new Dictionary<string, object>
             {
                 ["tablecloth"] = new
                 {
                     command = "node",
-                    args = new[] { Path.Combine(mcpServerPath, "dist", "index.js") },
+                    args = new[] { mcpServerPath },
                     env = new Dictionary<string, string>
                     {
                         ["TABLECLOTH_PROXY_URL"] = $"http://localhost:{status.YarpProxyPort}"
                     }
-                }
-            }
-        };
-
-        // VS Code용 설정도 함께 제공
-        var vscodeConfig = new
-        {
-            command = "node",
-            args = new[] { Path.Combine(mcpServerPath, "dist", "index.js") },
-            env = new Dictionary<string, string>
-            {
-                ["TABLECLOTH_PROXY_URL"] = $"http://localhost:{status.YarpProxyPort}"
-            }
-        };
-
-        var fullConfig = new
-        {
-            // Claude Desktop 설정 (claude_desktop_config.json)
-            ClaudeDesktop = claudeConfig,
-            
-            // VS Code 설정 (settings.json의 mcp 섹션)
-            VSCode = new
-            {
-                mcp = new
-                {
-                    servers = new Dictionary<string, object>
-                    {
-                        ["tablecloth"] = vscodeConfig
-                    }
-                }
-            },
-            
-            // 설정 위치 안내
-            Instructions = new
-            {
-                ClaudeDesktop = new
-                {
-                    ConfigFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Claude", "claude_desktop_config.json"),
-                    Description = "Claude Desktop 설정 파일에 위의 'ClaudeDesktop' 내용을 복사하세요."
-                },
-                VSCode = new
-                {
-                    ConfigFile = "VS Code settings.json",
-                    Description = "VS Code 설정에서 위의 'VSCode' 내용을 추가하세요."
-                },
-                McpServerPath = new
-                {
-                    Path = mcpServerPath,
-                    Description = "MCP 서버가 설치된 경로입니다. 실제 경로와 다를 수 있습니다."
                 }
             }
         };
@@ -290,7 +241,7 @@ public sealed partial class LauncherMainWindowViewModel : BaseViewModel, IDispos
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase
         };
 
-        return JsonSerializer.Serialize(fullConfig, options);
+        return JsonSerializer.Serialize(config, options);
     }
 
     [RelayCommand]

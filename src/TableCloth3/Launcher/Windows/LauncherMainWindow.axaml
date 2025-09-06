@@ -195,21 +195,21 @@
 								          FontSize="13"
 								          FontWeight="SemiBold"
 								          Foreground="{DynamicResource SystemFillColorSuccessBrush}" />
-								<TextBlock Text="Claude Desktop이나 VS Code에서 사용할 수 있는 설정을 복사하세요"
+								<TextBlock Text="Claude Desktop에서 사용할 수 있는 설정을 복사하세요"
 								          FontSize="11"
 								          Foreground="{DynamicResource TextFillColorSecondaryBrush}"
 								          TextWrapping="Wrap" />
 							</StackPanel>
 							
 							<Button Grid.Column="2"
-							        Content="설정 복사"
+							        Content="Claude 설정 복사"
 							        Command="{Binding CopyMcpConfigCommand}"
 							        VerticalAlignment="Center"
 							        Padding="16,8"
 							        FontSize="12"
 							        FontWeight="Medium"
 							        Classes="primary"
-							        ToolTip.Tip="MCP 클라이언트 설정을 클립보드에 복사합니다">
+							        ToolTip.Tip="Claude Desktop용 MCP 설정을 클립보드에 복사합니다">
 								<Button.Template>
 									<ControlTemplate>
 										<Border Background="{TemplateBinding Background}"
