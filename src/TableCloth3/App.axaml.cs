@@ -35,7 +35,10 @@ internal partial class App : Application
         if (!Design.IsDesignMode)
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                desktop.ShutdownMode = ShutdownMode.OnMainWindowClose;
                 desktop.MainWindow = _windowManager.CreateMainAvaloniaWindow();
+            }
         }
 
         base.OnFrameworkInitializationCompleted();
