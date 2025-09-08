@@ -1,18 +1,11 @@
-﻿using AsyncAwaitBestPractices;
-using Avalonia.Controls;
-using Avalonia.Input.Platform;
-using Avalonia.Threading;
+﻿using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Text.Json;
-using System.Threading.Tasks;
-using TableCloth3.Launcher.Models;
 using TableCloth3.Launcher.Services;
-using TableCloth3.Launcher.Windows;
 using TableCloth3.Shared.Services;
 using TableCloth3.Shared.ViewModels;
 
@@ -26,6 +19,7 @@ public sealed partial class LauncherMainWindowViewModel : BaseViewModel, IDispos
         AvaloniaViewModelManager viewModelManager,
         LauncherSettingsManager launcherSettingsManager,
         WindowsSandboxComposer windowsSandboxComposer,
+        WindowsSandboxLauncher windowsSandboxLauncher,
         TableClothCatalogService tableClothCatalogService,
         ProcessManagerFactory processManagerFactory,
         AvaloniaWindowManager windowManager,
@@ -35,6 +29,7 @@ public sealed partial class LauncherMainWindowViewModel : BaseViewModel, IDispos
         _viewModelManager = viewModelManager;
         _launcherSettingsManager = launcherSettingsManager;
         _windowsSandboxComposer = windowsSandboxComposer;
+        _windowsSandboxLauncher = windowsSandboxLauncher;
         _tableClothCatalogService = tableClothCatalogService;
         _processManagerFactory = processManagerFactory;
         _windowManager = windowManager;
@@ -50,6 +45,7 @@ public sealed partial class LauncherMainWindowViewModel : BaseViewModel, IDispos
     private readonly AvaloniaViewModelManager _viewModelManager = default!;
     private readonly LauncherSettingsManager _launcherSettingsManager = default!;
     private readonly WindowsSandboxComposer _windowsSandboxComposer = default!;
+    private readonly WindowsSandboxLauncher _windowsSandboxLauncher = default!;
     private readonly TableClothCatalogService _tableClothCatalogService = default!;
     private readonly ProcessManagerFactory _processManagerFactory = default!;
     private readonly AvaloniaWindowManager _windowManager = default!;
@@ -222,28 +218,10 @@ public sealed partial class LauncherMainWindowViewModel : BaseViewModel, IDispos
     {
         try
         {
-            var processList = Process.GetProcesses().Select(x => x.ProcessName);
-            var lookupList = new List<string> { "WindowsSandbox", "WindowsSandboxRemoteSession", "WindowsSandboxServer", };
-            foreach (var eachProcessName in processList)
-                if (lookupList.Contains(eachProcessName, StringComparer.OrdinalIgnoreCase))
-                    throw new Exception("Only one Windows Sandbox session allowed.");
-
-            var warnings = new List<string>();
-            var config = await _launcherSettingsManager.LoadSettingsAsync(cancellationToken).ConfigureAwait(false);
-            var wsbPath = await _windowsSandboxComposer.GenerateWindowsSandboxProfileAsync(
-                this, warnings, cancellationToken).ConfigureAwait(false);
+            var warnings = await _windowsSandboxLauncher.LaunchWindowsSandboxAsync(this, null, cancellationToken);
 
             if (warnings.Any())
                 _messenger.Send<NotifyWarningsMessage>(new NotifyWarningsMessage(warnings));
-
-            var windowsSandboxExecPath = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.System),
-                "WindowsSandbox.exe");
-
-            using var process = _processManagerFactory.CreateCmdShellProcess(windowsSandboxExecPath, wsbPath);
-
-            if (process.Start())
-                await process.WaitForExitAsync(cancellationToken).ConfigureAwait(false);
         }
         catch (Exception ex)
         {

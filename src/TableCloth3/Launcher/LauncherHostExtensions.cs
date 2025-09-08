@@ -10,6 +10,7 @@ internal static class LauncherHostExtensions
 {
     public static IHostApplicationBuilder UseTableCloth3LauncherComponents(this IHostApplicationBuilder builder)
     {
+        builder.Services.AddSingleton<WindowsSandboxLauncher>();
         builder.Services.AddSingleton<WindowsSandboxComposer>();
         builder.Services.AddSingleton<LauncherSettingsManager>();
         builder.Services.AddSingleton<EnvironmentValidationService>();
