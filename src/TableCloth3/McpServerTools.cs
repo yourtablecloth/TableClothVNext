@@ -16,6 +16,8 @@ internal static class McpServerTools
     public static readonly McpServerTool[] AvailableTools = [
         McpServerTool.Create(GetCurrentMode),
         McpServerTool.Create(LaunchSite),
+        McpServerTool.Create(LaunchSandbox),
+        McpServerTool.Create(FetchCatalog),
     ];
 
     [Description("Get the current mode of the application, such as Launcher, Spork, or Help.")]
@@ -32,6 +34,7 @@ internal static class McpServerTools
         };
     }
 
+    [Description("Launch a Windows Sandbox instance with the specified URL.")]
     public static async Task<string> LaunchSite(
         IServiceProvider serviceProvider,
         string url,
@@ -50,6 +53,34 @@ internal static class McpServerTools
             return "Launched with warnings: " + string.Join("; ", warnings);
         else
             return "Launched successfully.";
+    }
+
+    [Description("Launch a Windows Sandbox instance without a specific URL.")]
+    public static async Task<string> LaunchSandbox(
+        IServiceProvider serviceProvider,
+        CancellationToken cancellationToken = default)
+    {
+        var scenarioRouter = serviceProvider.GetRequiredService<ScenarioRouter>();
+        if (scenarioRouter.GetScenario() != Scenario.Launcher)
+            return "This MCP operation is not supported in this mode.";
+        var vm = serviceProvider.GetRequiredService<LauncherMainWindowViewModel>();
+        var launcher = serviceProvider.GetRequiredService<WindowsSandboxLauncher>();
+        var warnings = await launcher.LaunchWindowsSandboxAsync(vm, null, cancellationToken).ConfigureAwait(false);
+        if (warnings.Any())
+            return "Launched with warnings: " + string.Join("; ", warnings);
+        else
+            return "Launched successfully.";
+    }
+
+    [Description("Fetch the latest TableCloth catalog data.")]
+    public static async Task<string> FetchCatalog(
+        IServiceProvider serviceProvider,
+        CancellationToken cancellationToken = default)
+    {
+        var catalogService = serviceProvider.GetRequiredService<TableClothCatalogService>();
+        await catalogService.DownloadCatalogAsync(cancellationToken);
+        var catalog = await catalogService.LoadCatalogAsync(cancellationToken);
+        return catalog.ToString();
     }
 
     public static THostApplicationBuilder AddMcpServer<THostApplicationBuilder>(this THostApplicationBuilder builder)
