@@ -81,6 +81,10 @@ public sealed partial class LauncherMainWindowViewModel : BaseViewModel, IDispos
 
     public interface INotifyWarningsMessageRecipient : IRecipient<NotifyWarningsMessage>;
 
+    public sealed record class CopyMcpConfigMessage();
+
+    public interface ICopyMcpConfigMessageRecipient : IRecipient<CopyMcpConfigMessage>;
+
     [ObservableProperty]
     private bool _useMicrophone = false;
 
@@ -128,7 +132,7 @@ public sealed partial class LauncherMainWindowViewModel : BaseViewModel, IDispos
     }
 
     // MCP 설정 관련 프로퍼티
-    private McpServerStatus? _currentServerStatus;
+    public McpServerStatus? CurrentServerStatus { get; private set; }
 
     private void OnServerStatusChanged(object? sender, ServerStatusChangedEventArgs e)
     {
@@ -138,7 +142,7 @@ public sealed partial class LauncherMainWindowViewModel : BaseViewModel, IDispos
 
     private void UpdateServerStatus(McpServerStatus status)
     {
-        _currentServerStatus = status;
+        CurrentServerStatus = status;
         IsMcpServerHealthy = status.IsHealthy;
 
         // Command의 CanExecute 상태 업데이트
@@ -168,52 +172,17 @@ public sealed partial class LauncherMainWindowViewModel : BaseViewModel, IDispos
     }
 
     [RelayCommand(CanExecute = nameof(CanCopyMcpConfig))]
-    private async Task CopyMcpConfig(CancellationToken cancellationToken = default)
-    {
-        if (_currentServerStatus == null || !_currentServerStatus.IsHealthy)
-            return;
-
-        try
-        {
-            var config = GenerateMcpConfigJson(_currentServerStatus);
-            
-            var mainWindow = _windowManager.GetMainAvaloniaWindow();
-            var clipboard = TopLevel.GetTopLevel(mainWindow)?.Clipboard;
-            if (clipboard != null)
-            {
-                await clipboard.SetTextAsync(config);
-                
-                // 성공 메시지 (간단한 토스트 형태로 상태 텍스트 임시 변경)
-                var originalText = McpServerStatusText;
-                McpServerStatusText = "Claude Desktop 설정이 클립보드에 복사되었습니다!";
-                
-                // 2초 후 원래 텍스트로 복원
-                _ = Task.Delay(2000, cancellationToken).ContinueWith(_ =>
-                {
-                    Dispatcher.UIThread.Post(() => McpServerStatusText = originalText);
-                }, cancellationToken);
-            }
-        }
-        catch (Exception ex)
-        {
-            var originalText = McpServerStatusText;
-            McpServerStatusText = $"설정 복사 실패: {ex.Message}";
-            
-            // 3초 후 원래 텍스트로 복원
-            _ = Task.Delay(3000, cancellationToken).ContinueWith(_ =>
-            {
-                Dispatcher.UIThread.Post(() => McpServerStatusText = originalText);
-            }, cancellationToken);
-        }
-    }
+    private void CopyMcpConfig()
+        => _messenger.Send<CopyMcpConfigMessage>();
 
     private bool CanCopyMcpConfig()
-    {
-        return _currentServerStatus?.IsHealthy == true;
-    }
+        => CurrentServerStatus?.IsHealthy == true;
 
-    private string GenerateMcpConfigJson(McpServerStatus status)
+    public string GenerateMcpConfigJson()
     {
+        if (CurrentServerStatus == null)
+            throw new InvalidOperationException("MCP 서버 상태 정보가 없습니다.");
+
         // 현재 실행 중인 애플리케이션 경로 기준으로 MCP 서버 실행 파일 경로 추정
         var currentDir = Path.GetDirectoryName(Environment.ProcessPath) ?? Environment.CurrentDirectory;
         var mcpServerPath = Path.Combine(currentDir, "mcp-server", "dist", "index.js");
@@ -229,7 +198,7 @@ public sealed partial class LauncherMainWindowViewModel : BaseViewModel, IDispos
                     args = new[] { mcpServerPath },
                     env = new Dictionary<string, string>
                     {
-                        ["TABLECLOTH_PROXY_URL"] = $"http://localhost:{status.YarpProxyPort}"
+                        ["TABLECLOTH_PROXY_URL"] = $"http://localhost:{CurrentServerStatus.YarpProxyPort}"
                     }
                 }
             }

@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.DependencyInjection;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Dto;
+using System.Threading;
 using TableCloth3.Launcher.Languages;
 using TableCloth3.Launcher.Models;
 using TableCloth3.Launcher.Services;
@@ -24,7 +25,8 @@ public partial class LauncherMainWindow :
     ICloseButtonMessageRecipient,
     IManageFolderButtonMessageRecipient,
     INotifyErrorMessageRecipient,
-    INotifyWarningsMessageRecipient
+    INotifyWarningsMessageRecipient,
+    ICopyMcpConfigMessageRecipient
 {
     [ActivatorUtilitiesConstructor]
     public LauncherMainWindow(
@@ -47,8 +49,9 @@ public partial class LauncherMainWindow :
         _messenger.Register<ManageFolderButtonMessage>(this);
         _messenger.Register<NotifyErrorMessage>(this);
         _messenger.Register<NotifyWarningsMessage>(this);
+        _messenger.Register<CopyMcpConfigMessage>(this);
 
-		//ShowAsDialog = true;
+        //ShowAsDialog = true;
     }
 
     public LauncherMainWindow()
@@ -210,5 +213,49 @@ public partial class LauncherMainWindow :
                 .ShowWindowDialogAsync(this)
                 .SafeFireAndForget();
         });
+    }
+
+    void IRecipient<CopyMcpConfigMessage>.Receive(CopyMcpConfigMessage message)
+    {
+        if (_viewModel.CurrentServerStatus == null || !_viewModel.CurrentServerStatus.IsHealthy)
+            return;
+
+        try
+        {
+            var clipboard = TopLevel.GetTopLevel(this)?.Clipboard;
+            if (clipboard == null)
+                throw new Exception("클립보드에 접근할 수 없습니다.");
+
+            var config = _viewModel.GenerateMcpConfigJson();
+            clipboard.SetTextAsync(config).ContinueWith(task =>
+            {
+                var originalText = _viewModel.McpServerStatusText;
+                if (task.IsCanceled)
+                    _viewModel.McpServerStatusText = "설정 복사가 취소되었습니다.";
+                else if (task.IsFaulted)
+                    _viewModel.McpServerStatusText = "설정 복사 중 오류가 발생했습니다.";
+                else if (task.IsCompleted)
+                    _viewModel.McpServerStatusText = "Claude Desktop 설정이 클립보드에 복사되었습니다!";
+                else
+                    _viewModel.McpServerStatusText = "설정 복사에 실패했습니다.";
+
+                // 2초 후 원래 텍스트로 복원
+                _ = Task.Delay(TimeSpan.FromSeconds(2d)).ContinueWith(_ =>
+                {
+                    Dispatcher.UIThread.Post(() => _viewModel.McpServerStatusText = originalText);
+                });
+            }).SafeFireAndForget();
+        }
+        catch (Exception ex)
+        {
+            var originalText = _viewModel.McpServerStatusText;
+            _viewModel.McpServerStatusText = $"설정 복사 실패: {ex.Message}";
+
+            // 3초 후 원래 텍스트로 복원
+            _ = Task.Delay(TimeSpan.FromSeconds(3d)).ContinueWith(_ =>
+            {
+                Dispatcher.UIThread.Post(() => _viewModel.McpServerStatusText = originalText);
+            });
+        }
     }
 }

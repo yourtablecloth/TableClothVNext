@@ -1,5 +1,7 @@
 ﻿using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting.Internal;
 using TableCloth3.Help.Windows;
 using TableCloth3.Launcher.Windows;
 using TableCloth3.Shared.Models;
@@ -24,11 +26,23 @@ public sealed class AvaloniaWindowManager
         where TWindow : Window
         => _serviceProvider.GetRequiredService<TWindow>();
 
-    public Window GetMainAvaloniaWindow()
+    public Window CreateMainAvaloniaWindow()
         => _scenarioRouter.GetScenario() switch
         {
             Scenario.Help => GetAvaloniaWindow<HelpMainWindow>(),
             Scenario.Spork => GetAvaloniaWindow<SporkMainWindow>(),
             _ => GetAvaloniaWindow<LauncherMainWindow>(),
         };
+
+    public Window GetMainWindow()
+    {
+        if (App.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            var mainWindow = desktop?.MainWindow;
+            if (mainWindow != null)
+                return mainWindow;
+        }
+
+        throw new Exception("Cannot obtain the main window reference.");
+    }
 }
