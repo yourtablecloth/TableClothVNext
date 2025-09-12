@@ -53,8 +53,8 @@
 		</Style>
 	</Window.Styles>
 	
-	<Grid Margin="24">
-		<DockPanel>
+	<Grid>
+		<DockPanel Margin="24">
 			<!-- Action Buttons -->
 			<Grid Margin="0,24,0,0" DockPanel.Dock="Bottom">
 				<Grid.ColumnDefinitions>
