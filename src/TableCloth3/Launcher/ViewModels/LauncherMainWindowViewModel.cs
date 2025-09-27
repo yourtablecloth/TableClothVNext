@@ -93,6 +93,10 @@ public sealed partial class LauncherMainWindowViewModel : BaseViewModel, IDispos
 
     public interface IShowUpdateAvailableMessageRecipient : IRecipient<ShowUpdateAvailableMessage>;
 
+    public sealed record class SponsorButtonMessage;
+
+    public interface ISponsorButtonMessageRecipient : IRecipient<SponsorButtonMessage>;
+
     [ObservableProperty]
     private bool _useMicrophone = false;
 
@@ -218,6 +222,10 @@ public sealed partial class LauncherMainWindowViewModel : BaseViewModel, IDispos
     [RelayCommand]
     private void AboutButton()
         => _messenger.Send<AboutButtonMessage>();
+
+    [RelayCommand]
+    private void SponsorButton()
+        => _messenger.Send<SponsorButtonMessage>();
 
     [RelayCommand(AllowConcurrentExecutions = false)]
     private async Task LaunchButton(CancellationToken cancellationToken = default)

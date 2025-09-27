@@ -491,6 +491,10 @@ public sealed partial class SporkMainWindowViewModel : BaseViewModel
         => _messenger.Send<VisitGitHubButtonMessage>();
 
     [RelayCommand]
+    private void SponsorButton()
+        => _messenger.Send<SponsorButtonMessage>();
+
+    [RelayCommand]
     private void CheckUpdateButton()
         => _messenger.Send<CheckUpdateButtonMessage>();
 }

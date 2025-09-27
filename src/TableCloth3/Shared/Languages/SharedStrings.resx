@@ -168,6 +168,9 @@
     <value>Financing</value>
     <comment>Category</comment>
   </data>
+  <data name="GitHubSponsorsUrl" xml:space="preserve">
+    <value>https://github.com/sponsors/yourtablecloth</value>
+  </data>
   <data name="GitHubUrl" xml:space="preserve">
     <value>https://github.com/yourtablecloth/TableCloth</value>
   </data>
@@ -197,6 +200,14 @@
   <data name="SecurityCategoryDisplayName" xml:space="preserve">
     <value>Securities</value>
     <comment>Category</comment>
+  </data>
+  <data name="SponsorButton" xml:space="preserve">
+    <value>💝 _Sponsor</value>
+    <comment>Sponsor</comment>
+  </data>
+  <data name="SponsorTooltip" xml:space="preserve">
+    <value>Support this project on GitHub Sponsors</value>
+    <comment>Sponsor</comment>
   </data>
   <data name="UntaggedBuild" xml:space="preserve">
     <value>(untagged build)</value>

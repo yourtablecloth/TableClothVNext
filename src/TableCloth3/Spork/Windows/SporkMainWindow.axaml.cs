@@ -25,6 +25,7 @@ public partial class SporkMainWindow :
     ILaunchAddonRequestRecipient,
     IVisitWebSiteButtonMessageRecipient,
     IVisitGitHubButtonMessageRecipient,
+    ISponsorButtonMessageRecipient,
     ICheckUpdateButtonMessageRecipient
 {
     [ActivatorUtilitiesConstructor]
@@ -48,6 +49,7 @@ public partial class SporkMainWindow :
         _messenger.Register<LaunchAddonRequest>(this);
         _messenger.Register<VisitWebSiteButtonMessage>(this);
         _messenger.Register<VisitGitHubButtonMessage>(this);
+        _messenger.Register<SponsorButtonMessage>(this);
         _messenger.Register<CheckUpdateButtonMessage>(this);
 
         DataContext = _viewModel;
@@ -162,6 +164,19 @@ public partial class SporkMainWindow :
         Dispatcher.UIThread.Invoke(() =>
         {
             if (!Uri.TryCreate(SharedStrings.GitHubUrl, UriKind.Absolute, out var parsedUri) ||
+                parsedUri == null)
+                return;
+
+            using var process = _processManagerFactory.CreateShellExecuteProcess(parsedUri.AbsoluteUri);
+            process.Start();
+        });
+    }
+
+    void IRecipient<SponsorButtonMessage>.Receive(SponsorButtonMessage message)
+    {
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            if (!Uri.TryCreate(SharedStrings.GitHubSponsorsUrl, UriKind.Absolute, out var parsedUri) ||
                 parsedUri == null)
                 return;
 

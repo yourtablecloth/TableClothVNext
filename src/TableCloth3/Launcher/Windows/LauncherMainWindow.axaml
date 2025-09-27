@@ -3,6 +3,7 @@
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:lang="clr-namespace:TableCloth3.Launcher.Languages"
+		xmlns:sharedLang="clr-namespace:TableCloth3.Shared.Languages"
 		xmlns:vm="clr-namespace:TableCloth3.Launcher.ViewModels"
 		xmlns:controls="clr-namespace:TableCloth3.Shared.Controls"
 		xmlns:ui="clr-namespace:Avalonia.Controls;assembly=Avalonia.Controls"
@@ -61,14 +62,22 @@
 					<ColumnDefinition Width="Auto" />
 					<ColumnDefinition Width="*" />
 					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="Auto" />
 				</Grid.ColumnDefinitions>
 				
-				<Button Grid.Column="0" 
-				        Content="{x:Static lang:LauncherStrings.AboutApp}" 
-				        Command="{Binding AboutButtonCommand}"
-				        Classes="secondary" />
+				<StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="12">
+					<Button Content="{x:Static lang:LauncherStrings.AboutApp}" 
+					        Command="{Binding AboutButtonCommand}"
+					        Classes="secondary" />
+					<Button Content="{x:Static sharedLang:SharedStrings.SponsorButton}" 
+					        Command="{Binding SponsorButtonCommand}"
+					        ToolTip.Tip="{x:Static sharedLang:SharedStrings.SponsorTooltip}"
+					        Classes="primary"
+					        Background="#FF6B6B"
+					        BorderBrush="#FF5252" />
+				</StackPanel>
 				
-				<StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="12">
+				<StackPanel Grid.Column="3" Orientation="Horizontal" Spacing="12">
 					<Button Content="{x:Static lang:LauncherStrings.LaunchSandbox}" 
 					        Command="{Binding LaunchButtonCommand}"
 					        Classes="primary"

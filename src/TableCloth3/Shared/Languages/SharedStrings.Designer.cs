@@ -187,6 +187,15 @@ namespace TableCloth3.Shared.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to https://github.com/sponsors/yourtablecloth.
+        /// </summary>
+        public static string GitHubSponsorsUrl {
+            get {
+                return ResourceManager.GetString("GitHubSponsorsUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to https://github.com/yourtablecloth/TableCloth.
         /// </summary>
         public static string GitHubUrl {
@@ -255,6 +264,24 @@ namespace TableCloth3.Shared.Languages {
         public static string SecurityCategoryDisplayName {
             get {
                 return ResourceManager.GetString("SecurityCategoryDisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 💝 _Sponsor.
+        /// </summary>
+        public static string SponsorButton {
+            get {
+                return ResourceManager.GetString("SponsorButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Support this project on GitHub Sponsors.
+        /// </summary>
+        public static string SponsorTooltip {
+            get {
+                return ResourceManager.GetString("SponsorTooltip", resourceCulture);
             }
         }
         

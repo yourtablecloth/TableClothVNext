@@ -22,6 +22,7 @@ public partial class LauncherMainWindow :
     Window,
     IShowDisclaimerWindowMessageRecipient,
     IAboutButtonMessageRecipient,
+    ISponsorButtonMessageRecipient,
     ICloseButtonMessageRecipient,
     IMcpServerCloseConfirmationMessageRecipient,
     IManageFolderButtonMessageRecipient,
@@ -49,6 +50,7 @@ public partial class LauncherMainWindow :
 
         _messenger.Register<ShowDisclaimerWindowMessage>(this);
         _messenger.Register<AboutButtonMessage>(this);
+        _messenger.Register<SponsorButtonMessage>(this);
         _messenger.Register<CloseButtonMessage>(this);
         _messenger.Register<McpServerCloseConfirmationMessage>(this);
         _messenger.Register<ManageFolderButtonMessage>(this);
@@ -203,6 +205,19 @@ public partial class LauncherMainWindow :
     {
         var aboutWindow = _windowManager.GetAvaloniaWindow<AboutWindow>();
         aboutWindow.ShowDialog(this);
+    }
+
+    void IRecipient<SponsorButtonMessage>.Receive(SponsorButtonMessage message)
+    {
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            if (!Uri.TryCreate(TableCloth3.Shared.Languages.SharedStrings.GitHubSponsorsUrl, UriKind.Absolute, out var parsedUri) ||
+                parsedUri == null)
+                return;
+
+            using var process = _processManagerFactory.CreateShellExecuteProcess(parsedUri.AbsoluteUri);
+            process.Start();
+        });
     }
 
     void IRecipient<McpServerCloseConfirmationMessage>.Receive(McpServerCloseConfirmationMessage message)

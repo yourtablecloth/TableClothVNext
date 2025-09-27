@@ -7,6 +7,14 @@ namespace TableCloth3.Help.ViewModels;
 
 public sealed partial class HelpMainWindowViewModel : BaseViewModel
 {
+    public sealed record class CloseButtonMessage;
+
+    public interface ICloseButtonMessageRecipient : IRecipient<CloseButtonMessage>;
+
+    public sealed record class SponsorButtonMessage;
+
+    public interface ISponsorButtonMessageRecipient : IRecipient<SponsorButtonMessage>;
+
     [ActivatorUtilitiesConstructor]
     public HelpMainWindowViewModel(
         IMessenger messenger)
@@ -22,11 +30,11 @@ public sealed partial class HelpMainWindowViewModel : BaseViewModel
 
     private readonly IMessenger _messenger = default!;
 
-    public sealed record class CloseButtonMessage;
-
-    public interface ICloseButtonMessageRecipient : IRecipient<CloseButtonMessage>;
-
     [RelayCommand]
     private void CloseButton()
         => _messenger.Send<CloseButtonMessage>();
+
+    [RelayCommand]
+    private void SponsorButton()
+        => _messenger.Send<SponsorButtonMessage>();
 }

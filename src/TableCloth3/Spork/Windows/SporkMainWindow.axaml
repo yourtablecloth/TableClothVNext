@@ -619,7 +619,8 @@
 								CheckUpdateCommand="{Binding CheckUpdateButtonCommand}"
 								VersionInfo="{Binding VersionInfo}"
 								VisitGitHubCommand="{Binding VisitGitHubButtonCommand}"
-								VisitWebSiteCommand="{Binding VisitWebSiteButtonCommand}" />
+								VisitWebSiteCommand="{Binding VisitWebSiteButtonCommand}"
+								SponsorCommand="{Binding SponsorButtonCommand}" />
 						</TabItem>
 					</TabControl>
 				</DockPanel>

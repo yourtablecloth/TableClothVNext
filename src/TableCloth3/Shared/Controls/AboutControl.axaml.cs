@@ -13,6 +13,8 @@ public partial class AboutControl : UserControl
         AvaloniaProperty.Register<AboutControl, ICommand?>(nameof(VisitWebSiteCommand));
     public static readonly StyledProperty<ICommand?> VisitGitHubCommandProperty =
         AvaloniaProperty.Register<AboutControl, ICommand?>(nameof(VisitGitHubCommand));
+    public static readonly StyledProperty<ICommand?> SponsorCommandProperty =
+        AvaloniaProperty.Register<AboutControl, ICommand?>(nameof(SponsorCommand));
     public static readonly StyledProperty<ICommand?> CheckUpdateCommandProperty =
         AvaloniaProperty.Register<AboutControl, ICommand?>(nameof(CheckUpdateCommand));
     public static readonly StyledProperty<bool> IsCheckingUpdateProperty =
@@ -41,6 +43,12 @@ public partial class AboutControl : UserControl
         set => SetValue(VisitGitHubCommandProperty, value);
     }
 
+    public ICommand? SponsorCommand
+    {
+        get => GetValue(SponsorCommandProperty);
+        set => SetValue(SponsorCommandProperty, value);
+    }
+
     public ICommand? CheckUpdateCommand
     {
         get => GetValue(CheckUpdateCommandProperty);
@@ -59,6 +67,7 @@ public partial class AboutControl : UserControl
         this.VersionInfoBlock.Bind(TextBlock.TextProperty, this.GetObservable(VersionInfoProperty));
         this.VisitWebSiteButton.Bind(Button.CommandProperty, this.GetObservable(VisitWebSiteCommandProperty));
         this.VisitGitHubButton.Bind(Button.CommandProperty, this.GetObservable(VisitGitHubCommandProperty));
+        this.SponsorButton.Bind(Button.CommandProperty, this.GetObservable(SponsorCommandProperty));
         this.CheckUpdateButton.Bind(Button.CommandProperty, this.GetObservable(CheckUpdateCommandProperty));
         this.CheckUpdateButton.Bind(Button.IsEnabledProperty, this.GetObservable(IsCheckingUpdateProperty, x => !x));
         this.UpdateProgressRing.Bind(Control.IsVisibleProperty, this.GetObservable(IsCheckingUpdateProperty));

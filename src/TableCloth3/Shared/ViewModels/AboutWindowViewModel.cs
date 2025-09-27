@@ -36,6 +36,10 @@ public sealed partial class AboutWindowViewModel : BaseViewModel
 
     public interface IVisitGitHubButtonMessageRecipient : IRecipient<VisitGitHubButtonMessage>;
 
+    public sealed record class SponsorButtonMessage;
+
+    public interface ISponsorButtonMessageRecipient : IRecipient<SponsorButtonMessage>;
+
     public sealed record class CheckUpdateButtonMessage;
 
     public interface ICheckUpdateButtonMessageRecipient : IRecipient<CheckUpdateButtonMessage>;
@@ -60,6 +64,10 @@ public sealed partial class AboutWindowViewModel : BaseViewModel
     [RelayCommand]
     private void VisitGitHubButton()
         => messenger.Send<VisitGitHubButtonMessage>();
+
+    [RelayCommand]
+    private void SponsorButton()
+        => messenger.Send<SponsorButtonMessage>();
 
     [RelayCommand(AllowConcurrentExecutions = false)]
     private async Task CheckUpdateButton(CancellationToken cancellationToken = default)

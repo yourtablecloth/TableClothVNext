@@ -14,6 +14,7 @@ public partial class AboutWindow :
     Window,
     IVisitWebSiteButtonMessageRecipient,
     IVisitGitHubButtonMessageRecipient,
+    ISponsorButtonMessageRecipient,
     ICheckUpdateButtonMessageRecipient,
     IShowUpdateNotificationMessageRecipient
 {
@@ -32,6 +33,7 @@ public partial class AboutWindow :
 
         _messenger.Register<VisitWebSiteButtonMessage>(this);
         _messenger.Register<VisitGitHubButtonMessage>(this);
+        _messenger.Register<SponsorButtonMessage>(this);
         _messenger.Register<CheckUpdateButtonMessage>(this);
         _messenger.Register<ShowUpdateNotificationMessage>(this);
 
@@ -67,6 +69,16 @@ public partial class AboutWindow :
     void IRecipient<VisitGitHubButtonMessage>.Receive(VisitGitHubButtonMessage message)
     {
         if (!Uri.TryCreate(SharedStrings.GitHubUrl, UriKind.Absolute, out var parsedUri) ||
+            parsedUri == null)
+            return;
+
+        using var process = _processManagerFactory.CreateShellExecuteProcess(parsedUri.AbsoluteUri);
+        process.Start();
+    }
+
+    void IRecipient<SponsorButtonMessage>.Receive(SponsorButtonMessage message)
+    {
+        if (!Uri.TryCreate(SharedStrings.GitHubSponsorsUrl, UriKind.Absolute, out var parsedUri) ||
             parsedUri == null)
             return;
 

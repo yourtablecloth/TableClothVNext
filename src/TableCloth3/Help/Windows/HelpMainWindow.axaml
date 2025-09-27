@@ -5,9 +5,10 @@
         xmlns:vm="clr-namespace:TableCloth3.Help.ViewModels"
         xmlns:ctl="clr-namespace:TableCloth3.Help.Controls"
         xmlns:sc="clr-namespace:TableCloth3.Shared.Controls"
+        xmlns:lang="clr-namespace:TableCloth3.Shared.Languages"
         mc:Ignorable="d"
         Width="520"
-        Height="380"
+        Height="420"
         CanResize="False"
         x:Class="TableCloth3.Help.Windows.HelpMainWindow"
         Icon="avares:/Assets/Images/TableCloth.ico"
@@ -20,6 +21,7 @@
 	<Grid Margin="20">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="*" />
+			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 		<StackPanel VerticalAlignment="Top">
@@ -47,12 +49,19 @@
 					</TextBlock>
 		</StackPanel>
 
-		<Button HorizontalAlignment="Center"
-				Margin="0,20,0,0"
-				Content="Close"
-				Grid.Row="1"
-				Command="{Binding CloseButtonCommand,
-                                      Priority=1}" />
+		<StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Spacing="12" Margin="0,20,0,12">
+			<Button Content="{x:Static lang:SharedStrings.SponsorButton}"
+			        Command="{Binding SponsorButtonCommand}"
+			        ToolTip.Tip="{x:Static lang:SharedStrings.SponsorTooltip}"
+			        Classes="primary"
+			        Background="#FF6B6B"
+			        BorderBrush="#FF5252" />
+		</StackPanel>
+
+		<Button Grid.Row="2"
+		        HorizontalAlignment="Center"
+		        Content="Close"
+		        Command="{Binding CloseButtonCommand}" />
 	</Grid>
 
 </Window>
