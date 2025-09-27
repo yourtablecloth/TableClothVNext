@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path="settings.xamlstyler" />
+  </Folder>
+  <Project Path="TableCloth3/TableCloth3.csproj" />
+</Solution>

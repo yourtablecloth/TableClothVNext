@@ -29,6 +29,9 @@ public static class Program
 		builder.UseTableCloth3SharedComponents(args, out var scenarioRouter);
         builder.AddMcpServer();
 
+        // Register singleton service
+        builder.Services.AddSingleton<ISingleInstanceService, SingleInstanceService>();
+
         switch (scenarioRouter.GetScenario())
 		{
 			default:
@@ -48,6 +51,21 @@ public static class Program
 		builder.Services.AddAvaloniauiDesktopApplication<App>(BuildAvaloniaApp);
 
 		using var app = builder.Build();
+
+        // Check for existing instance before proceeding
+        var singleInstanceService = app.Services.GetRequiredService<ISingleInstanceService>();
+        if (singleInstanceService.IsAnotherInstanceRunning())
+        {
+            var loggerFactory = app.Services.GetRequiredService<ILoggerFactory>();
+            var logger = loggerFactory.CreateLogger("TableCloth3.Program");
+            logger.LogInformation("Another instance of TableCloth3 is already running. Attempting to bring it to foreground.");
+            
+            singleInstanceService.BringExistingInstanceToForeground();
+            
+            // Exit gracefully
+            return;
+        }
+
         app.TryMapMcpServer();
 
         app.Lifetime.ApplicationStarted.Register(() =>
@@ -98,6 +116,15 @@ public static class Program
             {
                 logger.LogError(ex, "서버 시작 중 오류가 발생했습니다.");
             }
+        });
+
+        // Register cleanup on application shutdown
+        app.Lifetime.ApplicationStopping.Register(() =>
+        {
+            var loggerFactory = app.Services.GetRequiredService<ILoggerFactory>();
+            var logger = loggerFactory.CreateLogger("TableCloth3.Program");
+            logger.LogInformation("Application is shutting down, releasing singleton lock...");
+            singleInstanceService.ReleaseLock();
         });
 
         app.RunAvaloniauiApplication(args).GetAwaiter().GetResult();
