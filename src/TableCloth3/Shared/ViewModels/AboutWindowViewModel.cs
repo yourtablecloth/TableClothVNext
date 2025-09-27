@@ -75,7 +75,7 @@ public sealed partial class AboutWindowViewModel : BaseViewModel
         try
         {
             var release = await _updateService.CheckForUpdatesAsync(cancellationToken);
-            
+
             if (release == null)
             {
                 messenger.Send(new ShowUpdateNotificationMessage(
@@ -87,9 +87,9 @@ public sealed partial class AboutWindowViewModel : BaseViewModel
             if (_updateService.IsUpdateAvailable(release))
             {
                 var message = string.Format(
-                    SharedStrings.UpdateAvailableMessage, 
+                    SharedStrings.UpdateAvailableMessage,
                     release.TagName);
-                    
+
                 messenger.Send(new ShowUpdateNotificationMessage(
                     SharedStrings.NewUpdateAvailable,
                     message,

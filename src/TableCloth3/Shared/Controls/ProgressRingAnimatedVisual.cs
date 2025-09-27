@@ -285,26 +285,26 @@ public sealed class ProgressRingAnimatedVisual : Control
                         break;
 
                     case HandlerMessageType.Value:
-                    {
-                        var next = (float)hm.Data;
-                        _lastValue = _value;
+                        {
+                            var next = (float)hm.Data;
+                            _lastValue = _value;
 
-                        // No animation if we drop the value
-                        if (next <= _value)
-                        {
-                            _value = next;
-                            _isAnimatingToValue = false;
+                            // No animation if we drop the value
+                            if (next <= _value)
+                            {
+                                _value = next;
+                                _isAnimatingToValue = false;
+                            }
+                            else
+                            {
+                                // Increasing, animate to new value
+                                _value = next;
+                                _isAnimatingToValue = true;
+                                RegisterForNextAnimationFrameUpdate();
+                                return;
+                            }
                         }
-                        else
-                        {
-                            // Increasing, animate to new value
-                            _value = next;
-                            _isAnimatingToValue = true;
-                            RegisterForNextAnimationFrameUpdate();
-                            return;
-                        }
-                    }
-                    break;
+                        break;
 
                     case HandlerMessageType.Active:
                         _active = (bool)hm.Data;
@@ -333,30 +333,30 @@ public sealed class ProgressRingAnimatedVisual : Control
                         break;
 
                     case HandlerMessageType.Background:
-                    {
-                        if (hm.Data is SKColor c)
                         {
-                            _background = c;
+                            if (hm.Data is SKColor c)
+                            {
+                                _background = c;
+                            }
+                            else
+                            {
+                                _background = null;
+                            }
                         }
-                        else
-                        {
-                            _background = null;
-                        }
-                    }
-                    break;
+                        break;
 
                     case HandlerMessageType.Foreground:
-                    {
-                        if (hm.Data is SKColor c)
                         {
-                            _foreground = c;
+                            if (hm.Data is SKColor c)
+                            {
+                                _foreground = c;
+                            }
+                            else
+                            {
+                                _foreground = SKColors.Transparent;
+                            }
                         }
-                        else
-                        {
-                            _foreground = SKColors.Transparent;
-                        }
-                    }
-                    break;
+                        break;
                 }
 
                 Update();

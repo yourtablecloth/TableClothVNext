@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.DependencyInjection;
-using TableCloth3.Launcher.Services;
 using TableCloth3.Shared.ViewModels;
 
 namespace TableCloth3.Launcher.ViewModels;

@@ -1,7 +1,4 @@
-﻿using System.Collections.Specialized;
-using System.Runtime.CompilerServices;
-
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Layout;
@@ -9,6 +6,8 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Platform;
 using Avalonia.Styling;
+using System.Collections.Specialized;
+using System.Runtime.CompilerServices;
 
 namespace TableCloth3.Styling;
 

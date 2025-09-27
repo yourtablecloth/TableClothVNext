@@ -36,7 +36,7 @@ public sealed class GitHubUpdateService
         try
         {
             var httpClient = _httpClientFactory.CreateCatalogHttpClient();
-            
+
             // GitHub API requires User-Agent header to be set
             var response = await httpClient.GetAsync(
                 $"{GitHubApiBaseUrl}/repos/{RepositoryOwner}/{RepositoryName}/releases/latest",
@@ -68,7 +68,7 @@ public sealed class GitHubUpdateService
             return false;
 
         var currentVersion = GetCurrentVersion();
-        
+
         // Parse the tag name (e.g., "v1.14.0" -> "1.14.0")
         var tagVersion = ParseVersionFromTag(release.TagName);
         if (tagVersion == null)
@@ -130,8 +130,8 @@ public sealed class GitHubUpdateService
             return null;
 
         // Remove 'v' prefix if present
-        var versionString = tagName.StartsWith("v", StringComparison.OrdinalIgnoreCase) 
-            ? tagName[1..] 
+        var versionString = tagName.StartsWith("v", StringComparison.OrdinalIgnoreCase)
+            ? tagName[1..]
             : tagName;
 
         return Version.TryParse(versionString, out var version) ? version : null;

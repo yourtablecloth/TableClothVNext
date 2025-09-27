@@ -6,7 +6,6 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Styling;
-using System.Diagnostics;
 
 namespace TableCloth3.Spork.Controls;
 

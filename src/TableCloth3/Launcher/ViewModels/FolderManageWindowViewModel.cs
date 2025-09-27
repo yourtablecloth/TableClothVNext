@@ -3,7 +3,6 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.ObjectModel;
-using TableCloth3.Launcher.Models;
 using TableCloth3.Shared.ViewModels;
 
 namespace TableCloth3.Launcher.ViewModels;

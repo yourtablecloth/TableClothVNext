@@ -1,10 +1,8 @@
-﻿using Avalonia.Controls;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using TableCloth3.Shared.ViewModels;
 
 namespace TableCloth3.Spork.ViewModels;
@@ -46,7 +44,7 @@ public sealed partial class InstallerProgressWindowViewModel : BaseViewModel
             Steps.Add(new()
             {
                 StepProgress = progress,
-                PackageName = $"Item {i+1}",
+                PackageName = $"Item {i + 1}",
                 PackageUrl = "https://yourtablecloth.app/",
                 PackageArguments = "/S",
                 StepError = progress == StepProgress.Failed ? "An error occurred while processing this step." : string.Empty,

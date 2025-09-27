@@ -1,4 +1,3 @@
-using AsyncAwaitBestPractices;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Messaging;
@@ -6,7 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
 using System.Diagnostics;
-using TableCloth3.Shared.Windows;
 using TableCloth3.Spork.Languages;
 using TableCloth3.Spork.ViewModels;
 using static TableCloth3.Spork.ViewModels.InstallerProgressWindowViewModel;

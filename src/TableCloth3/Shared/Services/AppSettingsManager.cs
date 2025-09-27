@@ -2,9 +2,6 @@
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Text.Json.Serialization.Metadata;
-using TableCloth3.Launcher;
-using TableCloth3.Shared.ViewModels;
 
 namespace TableCloth3.Shared.Services;
 

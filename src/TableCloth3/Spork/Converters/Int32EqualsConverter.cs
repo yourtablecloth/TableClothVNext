@@ -1,6 +1,6 @@
-using System.Globalization;
 using Avalonia.Data.Converters;
 using Avalonia.Markup.Xaml;
+using System.Globalization;
 
 namespace TableCloth3.Spork.Converters;
 

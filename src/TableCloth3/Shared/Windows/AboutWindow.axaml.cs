@@ -30,12 +30,12 @@ public partial class AboutWindow :
 
         DataContext = _viewModel;
 
-		_messenger.Register<VisitWebSiteButtonMessage>(this);
+        _messenger.Register<VisitWebSiteButtonMessage>(this);
         _messenger.Register<VisitGitHubButtonMessage>(this);
         _messenger.Register<CheckUpdateButtonMessage>(this);
         _messenger.Register<ShowUpdateNotificationMessage>(this);
 
-		//ShowAsDialog = true;
+        //ShowAsDialog = true;
     }
 
     public AboutWindow()
@@ -90,7 +90,7 @@ public partial class AboutWindow :
             message.Message,
             ButtonEnum.Ok,
             icon);
-        
+
         _ = messageBox.ShowWindowDialogAsync(this);
     }
 }

@@ -29,7 +29,7 @@ public class SingleInstanceService : ISingleInstanceService, IDisposable
     {
         _logger = logger;
         _mutex = new Mutex(true, MutexName, out bool createdNew);
-        
+
         if (!createdNew)
         {
             _logger.LogInformation("Another instance of TableCloth3 is already running");
@@ -69,7 +69,7 @@ public class SingleInstanceService : ISingleInstanceService, IDisposable
         {
             var currentProcess = Process.GetCurrentProcess();
             var processes = Process.GetProcessesByName(currentProcess.ProcessName);
-            
+
             foreach (var process in processes)
             {
                 if (process.Id != currentProcess.Id && !process.HasExited)
@@ -88,7 +88,7 @@ public class SingleInstanceService : ISingleInstanceService, IDisposable
         {
             _logger.LogError(ex, "Error bringing existing instance to foreground");
         }
-        
+
         return false;
     }
 

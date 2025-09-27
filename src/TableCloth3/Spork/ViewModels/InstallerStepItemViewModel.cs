@@ -1,15 +1,12 @@
-﻿using Avalonia.Controls;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using DotNext.Threading;
 using Microsoft.Extensions.DependencyInjection;
-using System.Diagnostics;
 using TableCloth3.Shared;
 using TableCloth3.Shared.Services;
 using TableCloth3.Shared.ViewModels;
 using TableCloth3.Spork.Languages;
-using TableCloth3.Spork.Services;
 
 namespace TableCloth3.Spork.ViewModels;
 

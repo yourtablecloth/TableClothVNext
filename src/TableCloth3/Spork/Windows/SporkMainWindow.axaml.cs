@@ -172,7 +172,8 @@ public partial class SporkMainWindow :
 
     void IRecipient<CheckUpdateButtonMessage>.Receive(CheckUpdateButtonMessage message)
     {
-        Dispatcher.UIThread.Invoke(() => {
+        Dispatcher.UIThread.Invoke(() =>
+        {
             // TODO
         });
     }

@@ -1,11 +1,8 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.Net.NetworkInformation;
 using System.Net.Sockets;
 
 namespace TableCloth3.Shared.Services;
@@ -14,7 +11,7 @@ public sealed class McpServerStatusService
 {
     private readonly IHost _host;
     private readonly SecondaryWebHostManager _secondaryWebHostManager;
-    
+
     // 서버 상태 변경 이벤트
     public event EventHandler<ServerStatusChangedEventArgs>? ServerStatusChanged;
 
@@ -22,7 +19,7 @@ public sealed class McpServerStatusService
     {
         _host = host;
         _secondaryWebHostManager = secondaryWebHostManager;
-        
+
         // SecondaryWebHostManager의 상태 변경을 구독
         _secondaryWebHostManager.StatusChanged += OnSecondaryWebHostStatusChanged;
     }

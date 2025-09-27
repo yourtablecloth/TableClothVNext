@@ -1,9 +1,8 @@
-﻿using System.Text.RegularExpressions;
-
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Documents;
 using Avalonia.Media;
+using System.Text.RegularExpressions;
 
 namespace TableCloth3.Help.Controls;
 

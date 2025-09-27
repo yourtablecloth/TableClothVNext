@@ -1,7 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting.Internal;
 using TableCloth3.Help.Windows;
 using TableCloth3.Launcher.Windows;
 using TableCloth3.Shared.Models;

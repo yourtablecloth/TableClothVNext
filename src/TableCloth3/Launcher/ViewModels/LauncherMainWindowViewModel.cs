@@ -193,7 +193,7 @@ public sealed partial class LauncherMainWindowViewModel : BaseViewModel, IDispos
         // Estimate MCP server executable path based on current running application path
         var currentDir = Path.GetDirectoryName(Environment.ProcessPath) ?? Environment.CurrentDirectory;
         var mcpServerPath = Path.Combine(currentDir, "mcp-server", "dist", "index.js");
-        
+
         // Generate configuration for Claude Desktop only
         var config = new
         {
@@ -291,9 +291,9 @@ public sealed partial class LauncherMainWindowViewModel : BaseViewModel, IDispos
         {
             // Add a small delay to not overwhelm the startup
             await Task.Delay(2000, cancellationToken);
-            
+
             var release = await _gitHubUpdateService.CheckForUpdatesAsync(cancellationToken);
-            
+
             if (release != null && _gitHubUpdateService.IsUpdateAvailable(release))
             {
                 // Send message to show update notification

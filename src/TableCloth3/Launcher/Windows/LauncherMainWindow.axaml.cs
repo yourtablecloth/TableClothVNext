@@ -7,8 +7,6 @@ using Microsoft.Extensions.DependencyInjection;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Dto;
 using MsBox.Avalonia.Enums;
-using System.ComponentModel;
-using System.Threading;
 using TableCloth3.Launcher.Languages;
 using TableCloth3.Launcher.Models;
 using TableCloth3.Launcher.Services;
@@ -49,7 +47,7 @@ public partial class LauncherMainWindow :
 
         DataContext = _viewModel;
 
-		_messenger.Register<ShowDisclaimerWindowMessage>(this);
+        _messenger.Register<ShowDisclaimerWindowMessage>(this);
         _messenger.Register<AboutButtonMessage>(this);
         _messenger.Register<CloseButtonMessage>(this);
         _messenger.Register<McpServerCloseConfirmationMessage>(this);
@@ -82,7 +80,7 @@ public partial class LauncherMainWindow :
         if (!_forceClose && _viewModel.IsMcpServerHealthy && _viewModel.CurrentServerStatus?.IsHealthy == true)
         {
             e.Cancel = true;
-            
+
             Dispatcher.UIThread.Post(async () =>
             {
                 var messageBoxParam = new MessageBoxStandardParams()
@@ -122,7 +120,7 @@ public partial class LauncherMainWindow :
                 }
             });
         }
-        
+
         base.OnClosing(e);
     }
 
