@@ -145,7 +145,7 @@
     <value>은행</value>
   </data>
   <data name="CheckUpdateButton" xml:space="preserve">
-    <value>업데이트 확인(_U)</value>
+    <value>업데이트 확인</value>
   </data>
   <data name="CreditCardCategoryDisplayName" xml:space="preserve">
     <value>신용카드</value>

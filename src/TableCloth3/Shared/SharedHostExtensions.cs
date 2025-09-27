@@ -59,6 +59,7 @@ internal static class SharedHostExtensions
         builder.Services.AddSingleton<LocationService>();
         builder.Services.AddSingleton<AppSettingsManager>();
         builder.Services.AddSingleton<TableClothCatalogService>();
+        builder.Services.AddSingleton<GitHubUpdateService>();
 
         builder.Services.AddSingleton<IMessenger>(WeakReferenceMessenger.Default);
         builder.Services.AddSingleton<AvaloniaViewModelManager>();

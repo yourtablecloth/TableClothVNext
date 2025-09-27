@@ -152,6 +152,10 @@
     <value>Check _Update</value>
     <comment>AboutWindow</comment>
   </data>
+  <data name="CheckingForUpdates" xml:space="preserve">
+    <value>Checking for updates...</value>
+    <comment>Update</comment>
+  </data>
   <data name="CreditCardCategoryDisplayName" xml:space="preserve">
     <value>Credit Cards</value>
     <comment>Category</comment>
@@ -175,6 +179,14 @@
     <value>Insurance</value>
     <comment>Category</comment>
   </data>
+  <data name="NewUpdateAvailable" xml:space="preserve">
+    <value>New Update Available</value>
+    <comment>Update</comment>
+  </data>
+  <data name="NoUpdatesAvailable" xml:space="preserve">
+    <value>No Updates Available</value>
+    <comment>Update</comment>
+  </data>
   <data name="OtherCategoryDisplayName" xml:space="preserve">
     <value>Others</value>
     <comment>Category</comment>
@@ -188,6 +200,18 @@
   </data>
   <data name="UntaggedBuild" xml:space="preserve">
     <value>(untagged build)</value>
+  </data>
+  <data name="UpdateAvailableMessage" xml:space="preserve">
+    <value>A new version ({0}) is available. Would you like to open the download page?</value>
+    <comment>Update</comment>
+  </data>
+  <data name="UpdateCheckFailedMessage" xml:space="preserve">
+    <value>Failed to check for updates. Please try again later.</value>
+    <comment>Update</comment>
+  </data>
+  <data name="UpToDateMessage" xml:space="preserve">
+    <value>You are using the latest version.</value>
+    <comment>Update</comment>
   </data>
   <data name="VisitGitHubButton" xml:space="preserve">
     <value>Visit _GitHub</value>

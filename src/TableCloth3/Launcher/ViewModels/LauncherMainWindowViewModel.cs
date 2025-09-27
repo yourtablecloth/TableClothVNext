@@ -23,7 +23,8 @@ public sealed partial class LauncherMainWindowViewModel : BaseViewModel, IDispos
         TableClothCatalogService tableClothCatalogService,
         ProcessManagerFactory processManagerFactory,
         AvaloniaWindowManager windowManager,
-        McpServerStatusService mcpServerStatusService)
+        McpServerStatusService mcpServerStatusService,
+        GitHubUpdateService gitHubUpdateService)
     {
         _messenger = messenger;
         _viewModelManager = viewModelManager;
@@ -34,6 +35,7 @@ public sealed partial class LauncherMainWindowViewModel : BaseViewModel, IDispos
         _processManagerFactory = processManagerFactory;
         _windowManager = windowManager;
         _mcpServerStatusService = mcpServerStatusService;
+        _gitHubUpdateService = gitHubUpdateService;
 
         // Subscribe to server status change events
         _mcpServerStatusService.ServerStatusChanged += OnServerStatusChanged;
@@ -50,6 +52,7 @@ public sealed partial class LauncherMainWindowViewModel : BaseViewModel, IDispos
     private readonly ProcessManagerFactory _processManagerFactory = default!;
     private readonly AvaloniaWindowManager _windowManager = default!;
     private readonly McpServerStatusService _mcpServerStatusService = default!;
+    private readonly GitHubUpdateService _gitHubUpdateService = default!;
 
     private DispatcherTimer? _statusCheckTimer;
 
@@ -84,6 +87,10 @@ public sealed partial class LauncherMainWindowViewModel : BaseViewModel, IDispos
     public sealed record class CopyMcpConfigMessage();
 
     public interface ICopyMcpConfigMessageRecipient : IRecipient<CopyMcpConfigMessage>;
+
+    public sealed record class ShowUpdateAvailableMessage(string Version, string ReleaseUrl);
+
+    public interface IShowUpdateAvailableMessageRecipient : IRecipient<ShowUpdateAvailableMessage>;
 
     [ObservableProperty]
     private bool _useMicrophone = false;
@@ -263,12 +270,40 @@ public sealed partial class LauncherMainWindowViewModel : BaseViewModel, IDispos
             _tableClothCatalogService.DownloadCatalogAsync(cancellationToken),
             _tableClothCatalogService.DownloadImagesAsync(cancellationToken),
             CheckMcpServerStatus(cancellationToken),
+            CheckForUpdatesInBackground(cancellationToken),
         ]);
 
         Loading = false;
 
         // Periodically check MCP server status (in case server hasn't fully started)
         StartPeriodicStatusCheck();
+    }
+
+    /// <summary>
+    /// Check for updates in the background without blocking the UI
+    /// </summary>
+    private async Task CheckForUpdatesInBackground(CancellationToken cancellationToken = default)
+    {
+        if (_gitHubUpdateService == null)
+            return;
+
+        try
+        {
+            // Add a small delay to not overwhelm the startup
+            await Task.Delay(2000, cancellationToken);
+            
+            var release = await _gitHubUpdateService.CheckForUpdatesAsync(cancellationToken);
+            
+            if (release != null && _gitHubUpdateService.IsUpdateAvailable(release))
+            {
+                // Send message to show update notification
+                _messenger.Send(new ShowUpdateAvailableMessage(release.TagName, release.HtmlUrl));
+            }
+        }
+        catch
+        {
+            // Silently ignore update check failures during startup
+        }
     }
 
     [RelayCommand]

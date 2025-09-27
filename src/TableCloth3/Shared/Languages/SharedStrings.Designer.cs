@@ -151,6 +151,15 @@ namespace TableCloth3.Shared.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Checking for updates....
+        /// </summary>
+        public static string CheckingForUpdates {
+            get {
+                return ResourceManager.GetString("CheckingForUpdates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Credit Cards.
         /// </summary>
         public static string CreditCardCategoryDisplayName {
@@ -205,6 +214,24 @@ namespace TableCloth3.Shared.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to New Update Available.
+        /// </summary>
+        public static string NewUpdateAvailable {
+            get {
+                return ResourceManager.GetString("NewUpdateAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No Updates Available.
+        /// </summary>
+        public static string NoUpdatesAvailable {
+            get {
+                return ResourceManager.GetString("NoUpdatesAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Others.
         /// </summary>
         public static string OtherCategoryDisplayName {
@@ -237,6 +264,33 @@ namespace TableCloth3.Shared.Languages {
         public static string UntaggedBuild {
             get {
                 return ResourceManager.GetString("UntaggedBuild", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A new version ({0}) is available. Would you like to open the download page?.
+        /// </summary>
+        public static string UpdateAvailableMessage {
+            get {
+                return ResourceManager.GetString("UpdateAvailableMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to check for updates. Please try again later..
+        /// </summary>
+        public static string UpdateCheckFailedMessage {
+            get {
+                return ResourceManager.GetString("UpdateCheckFailedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You are using the latest version..
+        /// </summary>
+        public static string UpToDateMessage {
+            get {
+                return ResourceManager.GetString("UpToDateMessage", resourceCulture);
             }
         }
         

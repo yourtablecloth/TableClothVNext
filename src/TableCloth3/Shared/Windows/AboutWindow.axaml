@@ -21,5 +21,6 @@
 		VisitGitHubCommand="{Binding VisitGitHubButtonCommand}"
 		VisitWebSiteCommand="{Binding VisitWebSiteButtonCommand}"
 		CheckUpdateCommand="{Binding CheckUpdateButtonCommand}" 
+		IsCheckingUpdate="{Binding IsCheckingUpdate}"
 		Margin="20"/>
 </Window>

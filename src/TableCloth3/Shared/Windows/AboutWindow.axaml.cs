@@ -1,6 +1,8 @@
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.DependencyInjection;
+using MsBox.Avalonia;
+using MsBox.Avalonia.Enums;
 using TableCloth3.Shared.Languages;
 using TableCloth3.Shared.Services;
 using TableCloth3.Shared.ViewModels;
@@ -12,7 +14,8 @@ public partial class AboutWindow :
     Window,
     IVisitWebSiteButtonMessageRecipient,
     IVisitGitHubButtonMessageRecipient,
-    ICheckUpdateButtonMessageRecipient
+    ICheckUpdateButtonMessageRecipient,
+    IShowUpdateNotificationMessageRecipient
 {
     [ActivatorUtilitiesConstructor]
     public AboutWindow(
@@ -30,6 +33,7 @@ public partial class AboutWindow :
 		_messenger.Register<VisitWebSiteButtonMessage>(this);
         _messenger.Register<VisitGitHubButtonMessage>(this);
         _messenger.Register<CheckUpdateButtonMessage>(this);
+        _messenger.Register<ShowUpdateNotificationMessage>(this);
 
 		//ShowAsDialog = true;
     }
@@ -72,6 +76,21 @@ public partial class AboutWindow :
 
     void IRecipient<CheckUpdateButtonMessage>.Receive(CheckUpdateButtonMessage message)
     {
-        // TODO
+        // This is now handled by the ViewModel using GitHubUpdateService
+        // Fallback to opening releases page if service is not available
+        using var process = _processManagerFactory.CreateShellExecuteProcess("https://github.com/yourtablecloth/TableCloth/releases");
+        process.Start();
+    }
+
+    void IRecipient<ShowUpdateNotificationMessage>.Receive(ShowUpdateNotificationMessage message)
+    {
+        var icon = message.IsUpdate ? MsBox.Avalonia.Enums.Icon.Info : MsBox.Avalonia.Enums.Icon.Warning;
+        var messageBox = MessageBoxManager.GetMessageBoxStandard(
+            message.Title,
+            message.Message,
+            ButtonEnum.Ok,
+            icon);
+        
+        _ = messageBox.ShowWindowDialogAsync(this);
     }
 }

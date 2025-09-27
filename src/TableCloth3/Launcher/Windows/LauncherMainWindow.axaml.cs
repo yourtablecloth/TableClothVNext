@@ -29,20 +29,23 @@ public partial class LauncherMainWindow :
     IManageFolderButtonMessageRecipient,
     INotifyErrorMessageRecipient,
     INotifyWarningsMessageRecipient,
-    ICopyMcpConfigMessageRecipient
+    ICopyMcpConfigMessageRecipient,
+    IShowUpdateAvailableMessageRecipient
 {
     [ActivatorUtilitiesConstructor]
     public LauncherMainWindow(
         LauncherMainWindowViewModel viewModel,
         IMessenger messenger,
         AvaloniaWindowManager windowManager,
-        LauncherSettingsManager launcherSettingsManager)
+        LauncherSettingsManager launcherSettingsManager,
+        ProcessManagerFactory processManagerFactory)
         : this()
     {
         _viewModel = viewModel;
         _messenger = messenger;
         _windowManager = windowManager;
         _launcherSettingsManager = launcherSettingsManager;
+        _processManagerFactory = processManagerFactory;
 
         DataContext = _viewModel;
 
@@ -54,6 +57,7 @@ public partial class LauncherMainWindow :
         _messenger.Register<NotifyErrorMessage>(this);
         _messenger.Register<NotifyWarningsMessage>(this);
         _messenger.Register<CopyMcpConfigMessage>(this);
+        _messenger.Register<ShowUpdateAvailableMessage>(this);
 
         //ShowAsDialog = true;
     }
@@ -68,6 +72,7 @@ public partial class LauncherMainWindow :
     private readonly IMessenger _messenger = default!;
     private readonly AvaloniaWindowManager _windowManager = default!;
     private readonly LauncherSettingsManager _launcherSettingsManager = default!;
+    private readonly ProcessManagerFactory _processManagerFactory = default!;
 
     private bool _forceClose = false;
 
@@ -345,5 +350,30 @@ public partial class LauncherMainWindow :
                 Dispatcher.UIThread.Post(() => _viewModel.McpServerStatusText = originalText);
             });
         }
+    }
+
+    void IRecipient<ShowUpdateAvailableMessage>.Receive(ShowUpdateAvailableMessage message)
+    {
+        Dispatcher.UIThread.Invoke(async () =>
+        {
+            var result = await MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
+                {
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    ContentTitle = "새 버전 사용 가능",
+                    ContentMessage = $"새 버전 {message.Version}이(가) 사용 가능합니다.\n\n다운로드 페이지를 열시겠습니까?",
+                    Icon = MsBox.Avalonia.Enums.Icon.Info,
+                    ButtonDefinitions = ButtonEnum.YesNo,
+                    EnterDefaultButton = ClickEnum.Yes,
+                    EscDefaultButton = ClickEnum.No
+                })
+                .ShowWindowDialogAsync(this);
+
+            if (result == ButtonResult.Yes)
+            {
+                using var process = _processManagerFactory.CreateShellExecuteProcess(message.ReleaseUrl);
+                process.Start();
+            }
+        });
     }
 }
