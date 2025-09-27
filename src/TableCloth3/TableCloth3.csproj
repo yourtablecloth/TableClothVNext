@@ -35,6 +35,7 @@
 		<PackageReference Include="DotNext.Threading" Version="5.24.0" />
 		<PackageReference Include="Lemon.Hosting.AvaloniauiDesktop" Version="1.0.0" />
 		<PackageReference Include="MessageBox.Avalonia" Version="3.2.0" />
+		<PackageReference Include="MicroCom.CodeGenerator.MSBuild" Version="0.11.0" />
 		<PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.8" />
 		<PackageReference Include="Microsoft.Extensions.Http" Version="9.0.8" />
 		<PackageReference Include="ModelContextProtocol.AspNetCore" Version="0.3.0-preview.4" />

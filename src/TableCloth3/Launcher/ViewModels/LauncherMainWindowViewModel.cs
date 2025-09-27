@@ -65,6 +65,10 @@ public sealed partial class LauncherMainWindowViewModel : BaseViewModel, IDispos
 
     public interface ICloseButtonMessageRecipient : IRecipient<CloseButtonMessage>;
 
+    public sealed record class McpServerCloseConfirmationMessage;
+
+    public interface IMcpServerCloseConfirmationMessageRecipient : IRecipient<McpServerCloseConfirmationMessage>;
+
     public sealed record class ManageFolderButtonMessage(ObservableCollection<string> Folders);
 
     public interface IManageFolderButtonMessageRecipient : IRecipient<ManageFolderButtonMessage>;
@@ -231,7 +235,17 @@ public sealed partial class LauncherMainWindowViewModel : BaseViewModel, IDispos
 
     [RelayCommand]
     private void CloseButton()
-        => _messenger.Send<CloseButtonMessage>();
+    {
+        // MCP 서버가 구동 중이면 확인 다이얼로그를 표시
+        if (IsMcpServerHealthy && CurrentServerStatus?.IsHealthy == true)
+        {
+            _messenger.Send<McpServerCloseConfirmationMessage>();
+        }
+        else
+        {
+            _messenger.Send<CloseButtonMessage>();
+        }
+    }
 
     [RelayCommand]
     private void ManageFolderButton()

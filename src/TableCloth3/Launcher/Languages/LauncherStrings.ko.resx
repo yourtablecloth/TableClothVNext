@@ -129,6 +129,9 @@
   <data name="CloseApp" xml:space="preserve">
     <value>닫기(_C)</value>
   </data>
+  <data name="CloseAnywayButton" xml:space="preserve">
+    <value>그래도 종료(_A)</value>
+  </data>
   <data name="CloseManageWindow" xml:space="preserve">
     <value>닫기(_C)</value>
   </data>
@@ -152,6 +155,17 @@
   </data>
   <data name="ManageFolders" xml:space="preserve">
     <value>폴더 관리(_O)</value>
+  </data>
+  <data name="McpServerCloseConfirmationMessage" xml:space="preserve">
+    <value>MCP 서버가 현재 실행 중이며 Claude Desktop에서 사용 중일 수 있습니다.
+
+서버를 계속 실행하려면 최소화하시거나, 완전히 종료하시겠습니까?</value>
+  </data>
+  <data name="McpServerCloseConfirmationTitle" xml:space="preserve">
+    <value>MCP 서버 실행 중</value>
+  </data>
+  <data name="MinimizeButton" xml:space="preserve">
+    <value>최소화(_M)</value>
   </data>
   <data name="MountNpkiFolders" xml:space="preserve">
     <value>인증서 폴더 연결(_N)</value>

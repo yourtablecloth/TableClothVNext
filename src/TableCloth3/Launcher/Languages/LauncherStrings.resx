@@ -165,6 +165,24 @@
     <value>Manage F_olders...</value>
     <comment>LauncherMainWindow</comment>
   </data>
+  <data name="McpServerCloseConfirmationTitle" xml:space="preserve">
+    <value>MCP Server Running</value>
+    <comment>LauncherMainWindow</comment>
+  </data>
+  <data name="McpServerCloseConfirmationMessage" xml:space="preserve">
+    <value>MCP server is currently running and may be used by Claude Desktop.
+
+Do you want to minimize the application to keep the server running, or do you want to close the application completely?</value>
+    <comment>LauncherMainWindow</comment>
+  </data>
+  <data name="MinimizeButton" xml:space="preserve">
+    <value>_Minimize</value>
+    <comment>LauncherMainWindow</comment>
+  </data>
+  <data name="CloseAnywayButton" xml:space="preserve">
+    <value>Close _Anyway</value>
+    <comment>LauncherMainWindow</comment>
+  </data>
   <data name="MountNpkiFolders" xml:space="preserve">
     <value>Mount _NPKI Folders</value>
     <comment>LauncherMainWindow</comment>

@@ -6,6 +6,8 @@ using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.DependencyInjection;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Enums;
+using System.ComponentModel;
 using System.Threading;
 using TableCloth3.Launcher.Languages;
 using TableCloth3.Launcher.Models;
@@ -23,6 +25,7 @@ public partial class LauncherMainWindow :
     IShowDisclaimerWindowMessageRecipient,
     IAboutButtonMessageRecipient,
     ICloseButtonMessageRecipient,
+    IMcpServerCloseConfirmationMessageRecipient,
     IManageFolderButtonMessageRecipient,
     INotifyErrorMessageRecipient,
     INotifyWarningsMessageRecipient,
@@ -46,6 +49,7 @@ public partial class LauncherMainWindow :
 		_messenger.Register<ShowDisclaimerWindowMessage>(this);
         _messenger.Register<AboutButtonMessage>(this);
         _messenger.Register<CloseButtonMessage>(this);
+        _messenger.Register<McpServerCloseConfirmationMessage>(this);
         _messenger.Register<ManageFolderButtonMessage>(this);
         _messenger.Register<NotifyErrorMessage>(this);
         _messenger.Register<NotifyWarningsMessage>(this);
@@ -60,12 +64,69 @@ public partial class LauncherMainWindow :
         InitializeComponent();
     }
 
-    protected override void OnLoaded(RoutedEventArgs e)
-	{
-		if (Design.IsDesignMode)
-			return;
+    private readonly LauncherMainWindowViewModel _viewModel = default!;
+    private readonly IMessenger _messenger = default!;
+    private readonly AvaloniaWindowManager _windowManager = default!;
+    private readonly LauncherSettingsManager _launcherSettingsManager = default!;
 
-		_launcherSettingsManager.LoadSettingsAsync()
+    private bool _forceClose = false;
+
+    protected override void OnClosing(WindowClosingEventArgs e)
+    {
+        // 강제 닫기가 아니고 MCP 서버가 구동 중이면 종료를 취소하고 확인 다이얼로그를 표시
+        if (!_forceClose && _viewModel.IsMcpServerHealthy && _viewModel.CurrentServerStatus?.IsHealthy == true)
+        {
+            e.Cancel = true;
+            
+            Dispatcher.UIThread.Post(async () =>
+            {
+                var messageBoxParam = new MessageBoxStandardParams()
+                {
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    ContentTitle = "MCP 서버 실행 중",
+                    ContentMessage = "MCP 서버가 현재 실행 중이며 Claude Desktop에서 사용 중일 수 있습니다.\n\n서버를 계속 실행하려면 최소화하시거나, 완전히 종료하시겠습니까?",
+                    Icon = MsBox.Avalonia.Enums.Icon.Question,
+                    ButtonDefinitions = ButtonEnum.OkCancel,
+                    EnterDefaultButton = ClickEnum.Cancel,
+                };
+
+                // 사용자 정의 버튼을 사용하여 구현
+                var result = await MessageBoxManager
+                    .GetMessageBoxStandard(new MessageBoxStandardParams
+                    {
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                        ContentTitle = "MCP 서버 실행 중",
+                        ContentMessage = "MCP 서버가 현재 실행 중이며 Claude Desktop에서 사용 중일 수 있습니다.\n\n서버를 계속 실행하려면 '취소'를 선택하여 최소화하거나, '확인'을 선택하여 완전히 종료하시겠습니까?",
+                        Icon = MsBox.Avalonia.Enums.Icon.Question,
+                        ButtonDefinitions = ButtonEnum.OkCancel,
+                        EnterDefaultButton = ClickEnum.Cancel,
+                        EscDefaultButton = ClickEnum.Cancel
+                    })
+                    .ShowWindowDialogAsync(this);
+
+                if (result == ButtonResult.Cancel)
+                {
+                    // 최소화
+                    WindowState = WindowState.Minimized;
+                }
+                else if (result == ButtonResult.Ok)
+                {
+                    // 강제 종료 플래그를 설정하고 다시 닫기 시도
+                    _forceClose = true;
+                    Close();
+                }
+            });
+        }
+        
+        base.OnClosing(e);
+    }
+
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        if (Design.IsDesignMode)
+            return;
+
+        _launcherSettingsManager.LoadSettingsAsync()
             .ContinueWith(x =>
             {
                 var config = x.Result ?? new LauncherSettingsModel();
@@ -126,11 +187,6 @@ public partial class LauncherMainWindow :
         base.OnClosed(e);
     }
 
-    private readonly LauncherMainWindowViewModel _viewModel = default!;
-    private readonly IMessenger _messenger = default!;
-    private readonly AvaloniaWindowManager _windowManager = default!;
-    private readonly LauncherSettingsManager _launcherSettingsManager = default!;
-
     void IRecipient<ShowDisclaimerWindowMessage>.Receive(ShowDisclaimerWindowMessage message)
     {
         Dispatcher.UIThread.Invoke(() =>
@@ -146,8 +202,40 @@ public partial class LauncherMainWindow :
         aboutWindow.ShowDialog(this);
     }
 
+    void IRecipient<McpServerCloseConfirmationMessage>.Receive(McpServerCloseConfirmationMessage message)
+    {
+        Dispatcher.UIThread.Invoke(async () =>
+        {
+            var result = await MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
+                {
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    ContentTitle = "MCP 서버 실행 중",
+                    ContentMessage = "MCP 서버가 현재 실행 중이며 Claude Desktop에서 사용 중일 수 있습니다.\n\n서버를 계속 실행하려면 '취소'를 선택하여 최소화하거나, '확인'을 선택하여 완전히 종료하시겠습니까?",
+                    Icon = MsBox.Avalonia.Enums.Icon.Question,
+                    ButtonDefinitions = ButtonEnum.OkCancel,
+                    EnterDefaultButton = ClickEnum.Cancel,
+                    EscDefaultButton = ClickEnum.Cancel
+                })
+                .ShowWindowDialogAsync(this);
+
+            if (result == ButtonResult.Cancel)
+            {
+                // 최소화
+                WindowState = WindowState.Minimized;
+            }
+            else if (result == ButtonResult.Ok)
+            {
+                // 강제 종료 플래그를 설정하고 프로그램 종료
+                _forceClose = true;
+                Close();
+            }
+        });
+    }
+
     void IRecipient<CloseButtonMessage>.Receive(CloseButtonMessage message)
     {
+        _forceClose = true;
         Close();
     }
 
