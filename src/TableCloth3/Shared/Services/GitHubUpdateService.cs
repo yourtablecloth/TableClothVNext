@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Reflection;
 using System.Text.Json;
+using TableCloth3.Shared.Json;
 using TableCloth3.Shared.Models;
 
 namespace TableCloth3.Shared.Services;
@@ -46,10 +47,7 @@ public sealed class GitHubUpdateService
                 return null;
 
             var jsonContent = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-            var release = JsonSerializer.Deserialize<GitHubRelease>(jsonContent, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });
+            var release = JsonSerializer.Deserialize(jsonContent, GitHubJsonSerializerContext.Default.GitHubRelease);
 
             return release;
         }

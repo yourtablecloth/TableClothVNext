@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.ObjectModel;
 using System.Text.Json;
+using TableCloth3.Launcher.Json;
 using TableCloth3.Launcher.Services;
 using TableCloth3.Shared.Services;
 using TableCloth3.Shared.ViewModels;
@@ -195,15 +196,15 @@ public sealed partial class LauncherMainWindowViewModel : BaseViewModel, IDispos
         var mcpServerPath = Path.Combine(currentDir, "mcp-server", "dist", "index.js");
 
         // Generate configuration for Claude Desktop only
-        var config = new
+        var config = new McpConfigRoot
         {
-            mcpServers = new Dictionary<string, object>
+            McpServers = new Dictionary<string, McpServerConfig>
             {
-                ["tablecloth"] = new
+                ["tablecloth"] = new McpServerConfig
                 {
-                    command = "node",
-                    args = new[] { mcpServerPath },
-                    env = new Dictionary<string, string>
+                    Command = "node",
+                    Args = [mcpServerPath],
+                    Env = new Dictionary<string, string>
                     {
                         ["TABLECLOTH_PROXY_URL"] = $"http://localhost:{CurrentServerStatus.YarpProxyPort}"
                     }
@@ -211,13 +212,7 @@ public sealed partial class LauncherMainWindowViewModel : BaseViewModel, IDispos
             }
         };
 
-        var options = new JsonSerializerOptions
-        {
-            WriteIndented = true,
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-        };
-
-        return JsonSerializer.Serialize(config, options);
+        return JsonSerializer.Serialize(config, McpConfigJsonSerializerContext.Default.McpConfigRoot);
     }
 
     [RelayCommand]
