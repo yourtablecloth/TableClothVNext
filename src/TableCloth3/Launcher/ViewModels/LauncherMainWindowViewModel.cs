@@ -35,7 +35,7 @@ public sealed partial class LauncherMainWindowViewModel : BaseViewModel, IDispos
         _windowManager = windowManager;
         _mcpServerStatusService = mcpServerStatusService;
 
-        // 서버 상태 변경 이벤트 구독
+        // Subscribe to server status change events
         _mcpServerStatusService.ServerStatusChanged += OnServerStatusChanged;
     }
 
@@ -109,7 +109,7 @@ public sealed partial class LauncherMainWindowViewModel : BaseViewModel, IDispos
     [ObservableProperty]
     private bool _loading = false;
 
-    // MCP 서버 상태 관련 프로퍼티들을 직접 구현
+    // MCP server status related properties implemented directly
     private bool _isMcpServerHealthy = false;
     public bool IsMcpServerHealthy
     {
@@ -117,7 +117,7 @@ public sealed partial class LauncherMainWindowViewModel : BaseViewModel, IDispos
         set => SetProperty(ref _isMcpServerHealthy, value);
     }
 
-    private string _mcpServerStatusText = "MCP 서버 상태 확인 중...";
+    private string _mcpServerStatusText = "Checking MCP server status...";
     public string McpServerStatusText
     {
         get => _mcpServerStatusText;
@@ -131,12 +131,12 @@ public sealed partial class LauncherMainWindowViewModel : BaseViewModel, IDispos
         set => SetProperty(ref _mcpServerStatusChecking, value);
     }
 
-    // MCP 설정 관련 프로퍼티
+    // MCP configuration related properties
     public McpServerStatus? CurrentServerStatus { get; private set; }
 
     private void OnServerStatusChanged(object? sender, ServerStatusChangedEventArgs e)
     {
-        // UI 스레드에서 상태 업데이트
+        // Update status on UI thread
         Dispatcher.UIThread.Post(() => UpdateServerStatus(e.Status));
     }
 
@@ -145,29 +145,29 @@ public sealed partial class LauncherMainWindowViewModel : BaseViewModel, IDispos
         CurrentServerStatus = status;
         IsMcpServerHealthy = status.IsHealthy;
 
-        // Command의 CanExecute 상태 업데이트
+        // Update Command's CanExecute state
         CopyMcpConfigCommand.NotifyCanExecuteChanged();
 
         if (status.IsHealthy)
         {
-            McpServerStatusText = $"MCP 서버 연결됨 (포트: {status.McpServerPort}, 프록시: {status.YarpProxyPort})";
+            McpServerStatusText = $"MCP server connected (Port: {status.McpServerPort}, Proxy: {status.YarpProxyPort})";
         }
         else
         {
             var statusParts = new List<string>();
 
             if (!status.IsMcpServerRunning)
-                statusParts.Add("MCP 서버 미연결");
+                statusParts.Add("MCP server disconnected");
 
             if (status.YarpProxyStarting)
-                statusParts.Add("프록시 서버 시작 중");
+                statusParts.Add("Proxy server starting");
             else if (!status.IsYarpProxyRunning)
-                statusParts.Add("프록시 서버 미연결");
+                statusParts.Add("Proxy server disconnected");
 
             if (!string.IsNullOrEmpty(status.LastError))
-                statusParts.Add($"오류: {status.LastError}");
+                statusParts.Add($"Error: {status.LastError}");
 
-            McpServerStatusText = statusParts.Any() ? string.Join(", ", statusParts) : "MCP 서버 연결 실패";
+            McpServerStatusText = statusParts.Any() ? string.Join(", ", statusParts) : "MCP server connection failed";
         }
     }
 
@@ -181,13 +181,13 @@ public sealed partial class LauncherMainWindowViewModel : BaseViewModel, IDispos
     public string GenerateMcpConfigJson()
     {
         if (CurrentServerStatus == null)
-            throw new InvalidOperationException("MCP 서버 상태 정보가 없습니다.");
+            throw new InvalidOperationException("MCP server status information is not available.");
 
-        // 현재 실행 중인 애플리케이션 경로 기준으로 MCP 서버 실행 파일 경로 추정
+        // Estimate MCP server executable path based on current running application path
         var currentDir = Path.GetDirectoryName(Environment.ProcessPath) ?? Environment.CurrentDirectory;
         var mcpServerPath = Path.Combine(currentDir, "mcp-server", "dist", "index.js");
         
-        // Claude Desktop용 설정만 생성
+        // Generate configuration for Claude Desktop only
         var config = new
         {
             mcpServers = new Dictionary<string, object>
@@ -236,7 +236,7 @@ public sealed partial class LauncherMainWindowViewModel : BaseViewModel, IDispos
     [RelayCommand]
     private void CloseButton()
     {
-        // MCP 서버가 구동 중이면 확인 다이얼로그를 표시
+        // Show confirmation dialog if MCP server is running
         if (IsMcpServerHealthy && CurrentServerStatus?.IsHealthy == true)
         {
             _messenger.Send<McpServerCloseConfirmationMessage>();
@@ -267,7 +267,7 @@ public sealed partial class LauncherMainWindowViewModel : BaseViewModel, IDispos
 
         Loading = false;
 
-        // MCP 서버 상태를 주기적으로 확인 (서버가 완전히 시작되지 않았을 경우를 대비)
+        // Periodically check MCP server status (in case server hasn't fully started)
         StartPeriodicStatusCheck();
     }
 
@@ -287,7 +287,7 @@ public sealed partial class LauncherMainWindowViewModel : BaseViewModel, IDispos
         catch (Exception ex)
         {
             IsMcpServerHealthy = false;
-            McpServerStatusText = $"상태 확인 실패: {ex.Message}";
+            McpServerStatusText = $"Status check failed: {ex.Message}";
         }
         finally
         {
@@ -297,7 +297,7 @@ public sealed partial class LauncherMainWindowViewModel : BaseViewModel, IDispos
 
     private void StartPeriodicStatusCheck()
     {
-        // 서버 시작 초기에는 더 자주 확인 (10초마다), 이후 30초마다 확인
+        // Check more frequently initially (every 10 seconds), then every 30 seconds
         _statusCheckTimer = new DispatcherTimer
         {
             Interval = TimeSpan.FromSeconds(10)
@@ -309,7 +309,7 @@ public sealed partial class LauncherMainWindowViewModel : BaseViewModel, IDispos
             await CheckMcpServerStatus();
             checkCount++;
 
-            // 6번 확인 후(1분 후) 간격을 30초로 변경
+            // Change interval to 30 seconds after 6 checks (1 minute)
             if (checkCount >= 6)
             {
                 _statusCheckTimer.Interval = TimeSpan.FromSeconds(30);

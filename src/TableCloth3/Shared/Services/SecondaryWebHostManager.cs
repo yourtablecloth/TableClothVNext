@@ -15,7 +15,7 @@ public sealed class SecondaryWebHostManager : IDisposable
         _configuration = configuration;
     }
 
-    // 상태 변경 이벤트
+    // Status change event
     public event EventHandler<SecondaryWebHostStatusChangedEventArgs>? StatusChanged;
 
     public async Task<WebApplication?> StartSecondaryWebHost(string targetAddress, CancellationToken cancellationToken = default)

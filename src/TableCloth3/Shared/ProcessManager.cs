@@ -168,7 +168,7 @@ public sealed class ProcessManager : IDisposable
                 try
                 {
                     _process.Kill();
-                    _process.WaitForExit(5000); // 5초 대기
+                    _process.WaitForExit(5000); // Wait for 5 seconds
                 }
                 catch { }
             }

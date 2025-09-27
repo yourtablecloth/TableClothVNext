@@ -211,4 +211,44 @@ Do you want to minimize the application to keep the server running, or do you wa
     <value>Warning</value>
     <comment>LauncherMainWindow</comment>
   </data>
+  <data name="McpServerConnectionStatus" xml:space="preserve">
+    <value>MCP Server Connection Status</value>
+    <comment>LauncherMainWindow</comment>
+  </data>
+  <data name="RefreshButton" xml:space="preserve">
+    <value>Refresh</value>
+    <comment>LauncherMainWindow</comment>
+  </data>
+  <data name="RefreshMcpServerStatusTooltip" xml:space="preserve">
+    <value>Refresh MCP server status</value>
+    <comment>LauncherMainWindow</comment>
+  </data>
+  <data name="McpServerConnectedSuccessfully" xml:space="preserve">
+    <value>MCP server connected successfully!</value>
+    <comment>LauncherMainWindow</comment>
+  </data>
+  <data name="CopyClaudeDesktopConfig" xml:space="preserve">
+    <value>Copy settings for use in Claude Desktop</value>
+    <comment>LauncherMainWindow</comment>
+  </data>
+  <data name="CopyClaudeSettings" xml:space="preserve">
+    <value>Copy Claude Settings</value>
+    <comment>LauncherMainWindow</comment>
+  </data>
+  <data name="CopyClaudeSettingsTooltip" xml:space="preserve">
+    <value>Copy MCP settings for Claude Desktop to clipboard</value>
+    <comment>LauncherMainWindow</comment>
+  </data>
+  <data name="SandboxSettings" xml:space="preserve">
+    <value>Sandbox Settings</value>
+    <comment>LauncherMainWindow</comment>
+  </data>
+  <data name="HardwareAccess" xml:space="preserve">
+    <value>Hardware Access</value>
+    <comment>LauncherMainWindow</comment>
+  </data>
+  <data name="FolderAccess" xml:space="preserve">
+    <value>Folder Access</value>
+    <comment>LauncherMainWindow</comment>
+  </data>
 </root>

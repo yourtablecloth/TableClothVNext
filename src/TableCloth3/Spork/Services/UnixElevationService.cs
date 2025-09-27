@@ -15,14 +15,14 @@ public class UnixElevationService : IElevationService
     {
         var exeName = GetCurrentExecutablePath();
         if (string.IsNullOrEmpty(exeName))
-            throw new InvalidOperationException("실행 파일 경로를 찾을 수 없습니다. 수동으로 root 권한으로 실행하십시오.");
+            throw new InvalidOperationException("Cannot find executable file path. Please run with root privileges manually.");
 
         if (!File.Exists("/bin/sh"))
-            throw new InvalidOperationException("/bin/sh가 시스템에 없습니다. 수동으로 root 권한으로 실행하십시오.");
+            throw new InvalidOperationException("/bin/sh is not available on this system. Please run with root privileges manually.");
 
         string? sudoPath = FindExecutableInPath("sudo");
         if (string.IsNullOrEmpty(sudoPath))
-            throw new InvalidOperationException("sudo를 찾을 수 없습니다. 수동으로 root 권한으로 실행하십시오.");
+            throw new InvalidOperationException("Cannot find sudo. Please run with root privileges manually.");
 
         string argList = args != null && args.Length > 0
             ? string.Join(" ", Array.ConvertAll(args, arg => $"\"{arg}\""))
@@ -42,7 +42,7 @@ public class UnixElevationService : IElevationService
         }
         catch (Exception ex)
         {
-            throw new InvalidOperationException("sudo를 통한 권한 상승 실행 실패: " + ex.Message, ex);
+            throw new InvalidOperationException("Failed to execute privilege elevation through sudo: " + ex.Message, ex);
         }
 
         Environment.Exit(0);

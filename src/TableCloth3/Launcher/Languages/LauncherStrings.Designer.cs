@@ -88,6 +88,15 @@ namespace TableCloth3.Launcher.Languages {
         }
         
         /// <summary>
+        ///   Close _Anyway과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string CloseAnywayButton {
+            get {
+                return ResourceManager.GetString("CloseAnywayButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   _Close과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string CloseApp {
@@ -106,11 +115,47 @@ namespace TableCloth3.Launcher.Languages {
         }
         
         /// <summary>
+        ///   Copy Claude Settings과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string CopyClaudeSettings {
+            get {
+                return ResourceManager.GetString("CopyClaudeSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Copy MCP settings for Claude Desktop to clipboard과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string CopyClaudeSettingsTooltip {
+            get {
+                return ResourceManager.GetString("CopyClaudeSettingsTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Copy settings for use in Claude Desktop과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string CopyClaudeDesktopConfig {
+            get {
+                return ResourceManager.GetString("CopyClaudeDesktopConfig", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Error과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string ErrorTitle {
             get {
                 return ResourceManager.GetString("ErrorTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Folder Access과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string FolderAccess {
+            get {
+                return ResourceManager.GetString("FolderAccess", resourceCulture);
             }
         }
         
@@ -129,6 +174,15 @@ namespace TableCloth3.Launcher.Languages {
         public static string FolderManageWindowTitle {
             get {
                 return ResourceManager.GetString("FolderManageWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Hardware Access과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string HardwareAccess {
+            get {
+                return ResourceManager.GetString("HardwareAccess", resourceCulture);
             }
         }
         
@@ -169,6 +223,53 @@ namespace TableCloth3.Launcher.Languages {
         }
         
         /// <summary>
+        ///   MCP Server Connection Status과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string McpServerConnectionStatus {
+            get {
+                return ResourceManager.GetString("McpServerConnectionStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   MCP server connected successfully!과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string McpServerConnectedSuccessfully {
+            get {
+                return ResourceManager.GetString("McpServerConnectedSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   MCP server is currently running and may be used by Claude Desktop.
+        ///
+        ///Do you want to minimize the application to keep the server running, or do you want to close the application completely?과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string McpServerCloseConfirmationMessage {
+            get {
+                return ResourceManager.GetString("McpServerCloseConfirmationMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   MCP Server Running과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string McpServerCloseConfirmationTitle {
+            get {
+                return ResourceManager.GetString("McpServerCloseConfirmationTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   _Minimize과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string MinimizeButton {
+            get {
+                return ResourceManager.GetString("MinimizeButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Mount _NPKI Folders과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string MountNpkiFolders {
@@ -187,11 +288,38 @@ namespace TableCloth3.Launcher.Languages {
         }
         
         /// <summary>
+        ///   Refresh과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string RefreshButton {
+            get {
+                return ResourceManager.GetString("RefreshButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Refresh MCP server status과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string RefreshMcpServerStatusTooltip {
+            get {
+                return ResourceManager.GetString("RefreshMcpServerStatusTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   _Remove과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string RemoveFolderButton {
             get {
                 return ResourceManager.GetString("RemoveFolderButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sandbox Settings과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string SandboxSettings {
+            get {
+                return ResourceManager.GetString("SandboxSettings", resourceCulture);
             }
         }
         

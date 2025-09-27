@@ -80,41 +80,41 @@ public static class Program
                 var firstAddress = addressResolver.Addresses.FirstOrDefault();
                 if (!string.IsNullOrEmpty(firstAddress))
                 {
-                    logger.LogInformation("MCP 서버가 {Address}에서 시작되었습니다.", firstAddress);
+                    logger.LogInformation("MCP server started at {Address}.", firstAddress);
                     
                     var webHostManager = app.Services.GetRequiredService<SecondaryWebHostManager>();
                     
-                    // YARP 프록시 서버 시작
+                    // Start YARP proxy server
                     Task.Run(async () =>
                     {
                         try
                         {
-                            logger.LogInformation("YARP 프록시 서버를 시작하는 중... (대상: {TargetAddress})", firstAddress);
+                            logger.LogInformation("Starting YARP proxy server... (Target: {TargetAddress})", firstAddress);
                             var proxyApp = await webHostManager.StartSecondaryWebHost(firstAddress);
                             
                             if (proxyApp != null)
                             {
-                                logger.LogInformation("YARP 프록시 서버가 http://127.0.0.1:29400에서 성공적으로 시작되었습니다.");
+                                logger.LogInformation("YARP proxy server successfully started at http://127.0.0.1:29400.");
                             }
                             else
                             {
-                                logger.LogError("YARP 프록시 서버 시작에 실패했습니다.");
+                                logger.LogError("Failed to start YARP proxy server.");
                             }
                         }
                         catch (Exception ex)
                         {
-                            logger.LogError(ex, "YARP 프록시 서버 시작 중 오류가 발생했습니다.");
+                            logger.LogError(ex, "An error occurred while starting YARP proxy server.");
                         }
                     }).SafeFireAndForget();
                 }
                 else
                 {
-                    logger.LogWarning("MCP 서버 주소를 찾을 수 없습니다.");
+                    logger.LogWarning("Could not find MCP server address.");
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "서버 시작 중 오류가 발생했습니다.");
+                logger.LogError(ex, "An error occurred while starting the server.");
             }
         });
 

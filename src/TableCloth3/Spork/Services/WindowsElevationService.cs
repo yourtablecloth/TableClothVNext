@@ -25,7 +25,7 @@ public sealed class WindowsElevationService : IElevationService
     {
         var exeName = GetCurrentExecutablePath();
         if (string.IsNullOrEmpty(exeName))
-            throw new InvalidOperationException("실행 파일 경로를 찾을 수 없습니다. 수동으로 관리자 권한으로 실행하십시오.");
+            throw new InvalidOperationException("Cannot find executable file path. Please run with administrator privileges manually.");
 
         var startInfo = new ProcessStartInfo
         {
@@ -43,7 +43,7 @@ public sealed class WindowsElevationService : IElevationService
         }
         catch (Exception ex)
         {
-            throw new InvalidOperationException("관리자 권한 실행 실패: " + ex.Message, ex);
+            throw new InvalidOperationException("Failed to execute with administrator privileges: " + ex.Message, ex);
         }
 
         Environment.Exit(0);

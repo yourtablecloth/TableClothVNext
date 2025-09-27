@@ -16,7 +16,7 @@
 		x:DataType="vm:LauncherMainWindowViewModel"
 		Title="{x:Static lang:LauncherStrings.LauncherMainWindowTitle}"
 		WindowStartupLocation="CenterScreen"
-		Icon="avares:/Assets/Images/TableCloth.png">
+		Icon="avares://TableCloth3/Assets/Images/TableCloth.png">
 	<Design.DataContext>
 		<vm:LauncherMainWindowViewModel />
 	</Design.DataContext>
@@ -97,7 +97,7 @@
 					
 					<!-- Header -->
 					<TextBlock Grid.Row="0" 
-					          Text="MCP 서버 연결 상태"
+					          Text="{x:Static lang:LauncherStrings.McpServerConnectionStatus}"
 					          FontSize="14"
 					          FontWeight="SemiBold"
 					          Margin="0,0,0,8"
@@ -147,14 +147,14 @@
 						
 						<!-- Refresh Button -->
 						<Button Grid.Column="3"
-						        Content="새로고침" 
+						        Content="{x:Static lang:LauncherStrings.RefreshButton}" 
 						        Command="{Binding CheckMcpServerStatusCommand}"
 						        IsEnabled="{Binding McpServerStatusChecking, Converter={x:Static BoolConverters.Not}}"
 						        VerticalAlignment="Center"
 						        Padding="12,4"
 						        FontSize="12"
 						        Classes="secondary"
-						        ToolTip.Tip="MCP 서버 상태 새로고침" />
+						        ToolTip.Tip="{x:Static lang:LauncherStrings.RefreshMcpServerStatusTooltip}" />
 					</Grid>
 					
 					<!-- MCP Config Copy Section -->
@@ -190,25 +190,25 @@
 							<StackPanel Grid.Column="1" 
 							           VerticalAlignment="Center"
 							           Spacing="2">
-								<TextBlock Text="MCP 서버 연결 성공!"
+								<TextBlock Text="{x:Static lang:LauncherStrings.McpServerConnectedSuccessfully}"
 								          FontSize="13"
 								          FontWeight="SemiBold"
 								          Foreground="{DynamicResource SystemFillColorSuccessBrush}" />
-								<TextBlock Text="Claude Desktop에서 사용할 수 있는 설정을 복사하세요"
+								<TextBlock Text="{x:Static lang:LauncherStrings.CopyClaudeDesktopConfig}"
 								          FontSize="11"
 								          Foreground="{DynamicResource TextFillColorSecondaryBrush}"
 								          TextWrapping="Wrap" />
 							</StackPanel>
 							
 							<Button Grid.Column="2"
-							        Content="Claude 설정 복사"
+							        Content="{x:Static lang:LauncherStrings.CopyClaudeSettings}"
 							        Command="{Binding CopyMcpConfigCommand}"
 							        VerticalAlignment="Center"
 							        Padding="16,8"
 							        FontSize="12"
 							        FontWeight="Medium"
 							        Classes="primary"
-							        ToolTip.Tip="Claude Desktop용 MCP 설정을 클립보드에 복사합니다">
+							        ToolTip.Tip="{x:Static lang:LauncherStrings.CopyClaudeSettingsTooltip}">
 								<Button.Template>
 									<ControlTemplate>
 										<Border Background="{TemplateBinding Background}"
@@ -238,7 +238,7 @@
 			<!-- Main Configuration Section -->
 			<Border Padding="0" CornerRadius="8">
 				<StackPanel Spacing="4">
-					<TextBlock Text="샌드박스 설정"
+					<TextBlock Text="{x:Static lang:LauncherStrings.SandboxSettings}"
 					          FontSize="16"
 					          FontWeight="SemiBold"
 					          Margin="0,0,0,16"
@@ -251,7 +251,7 @@
 					        BorderThickness="0,0,0,1"
 					        Margin="0,0,0,8">
 						<StackPanel Spacing="4">
-							<TextBlock Text="하드웨어 접근"
+							<TextBlock Text="{x:Static lang:LauncherStrings.HardwareAccess}"
 							          FontSize="13"
 							          FontWeight="Medium"
 							          Margin="0,0,0,8"
@@ -269,7 +269,7 @@
 					<Border Padding="16" 
 					        Background="{DynamicResource SubtleFillColorTransparentBrush}">
 						<StackPanel Spacing="4">
-							<TextBlock Text="폴더 접근"
+							<TextBlock Text="{x:Static lang:LauncherStrings.FolderAccess}"
 							          FontSize="13"
 							          FontWeight="Medium"
 							          Margin="0,0,0,8"
