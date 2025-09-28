@@ -65,10 +65,6 @@ public sealed partial class LauncherMainWindowViewModel : BaseViewModel, IDispos
 
     public interface IAboutButtonMessageRecipient : IRecipient<AboutButtonMessage>;
 
-    public sealed record class CloseButtonMessage;
-
-    public interface ICloseButtonMessageRecipient : IRecipient<CloseButtonMessage>;
-
     public sealed record class McpServerCloseConfirmationMessage;
 
     public interface IMcpServerCloseConfirmationMessageRecipient : IRecipient<McpServerCloseConfirmationMessage>;
@@ -240,20 +236,6 @@ public sealed partial class LauncherMainWindowViewModel : BaseViewModel, IDispos
         catch (Exception ex)
         {
             _messenger.Send<NotifyErrorMessage>(new NotifyErrorMessage(ex));
-        }
-    }
-
-    [RelayCommand]
-    private void CloseButton()
-    {
-        // Show confirmation dialog if MCP server is running
-        if (IsMcpServerHealthy && CurrentServerStatus?.IsHealthy == true)
-        {
-            _messenger.Send<McpServerCloseConfirmationMessage>();
-        }
-        else
-        {
-            _messenger.Send<CloseButtonMessage>();
         }
     }
 

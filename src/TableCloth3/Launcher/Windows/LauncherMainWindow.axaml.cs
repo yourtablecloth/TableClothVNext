@@ -23,7 +23,6 @@ public partial class LauncherMainWindow :
     IShowDisclaimerWindowMessageRecipient,
     IAboutButtonMessageRecipient,
     ISponsorButtonMessageRecipient,
-    ICloseButtonMessageRecipient,
     IMcpServerCloseConfirmationMessageRecipient,
     IManageFolderButtonMessageRecipient,
     INotifyErrorMessageRecipient,
@@ -51,7 +50,6 @@ public partial class LauncherMainWindow :
         _messenger.Register<ShowDisclaimerWindowMessage>(this);
         _messenger.Register<AboutButtonMessage>(this);
         _messenger.Register<SponsorButtonMessage>(this);
-        _messenger.Register<CloseButtonMessage>(this);
         _messenger.Register<McpServerCloseConfirmationMessage>(this);
         _messenger.Register<ManageFolderButtonMessage>(this);
         _messenger.Register<NotifyErrorMessage>(this);
@@ -78,52 +76,42 @@ public partial class LauncherMainWindow :
 
     protected override void OnClosing(WindowClosingEventArgs e)
     {
-        // 강제 닫기가 아니고 MCP 서버가 구동 중이면 종료를 취소하고 확인 다이얼로그를 표시
+        // 강제 닫기가 아니고 MCP 서버가 실행 중인 경우에만 확인 대화상자 표시
         if (!_forceClose && _viewModel.IsMcpServerHealthy && _viewModel.CurrentServerStatus?.IsHealthy == true)
         {
             e.Cancel = true;
 
             Dispatcher.UIThread.Post(async () =>
             {
-                var messageBoxParam = new MessageBoxStandardParams()
-                {
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                    ContentTitle = "MCP 서버 실행 중",
-                    ContentMessage = "MCP 서버가 현재 실행 중이며 Claude Desktop에서 사용 중일 수 있습니다.\n\n서버를 계속 실행하려면 최소화하시거나, 완전히 종료하시겠습니까?",
-                    Icon = MsBox.Avalonia.Enums.Icon.Question,
-                    ButtonDefinitions = ButtonEnum.OkCancel,
-                    EnterDefaultButton = ClickEnum.Cancel,
-                };
-
-                // 사용자 정의 버튼을 사용하여 구현
-                var result = await MessageBoxManager
-                    .GetMessageBoxStandard(new MessageBoxStandardParams
-                    {
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                        ContentTitle = "MCP 서버 실행 중",
-                        ContentMessage = "MCP 서버가 현재 실행 중이며 Claude Desktop에서 사용 중일 수 있습니다.\n\n서버를 계속 실행하려면 '취소'를 선택하여 최소화하거나, '확인'을 선택하여 완전히 종료하시겠습니까?",
-                        Icon = MsBox.Avalonia.Enums.Icon.Question,
-                        ButtonDefinitions = ButtonEnum.OkCancel,
-                        EnterDefaultButton = ClickEnum.Cancel,
-                        EscDefaultButton = ClickEnum.Cancel
-                    })
-                    .ShowWindowDialogAsync(this);
-
-                if (result == ButtonResult.Cancel)
-                {
-                    // 최소화
-                    WindowState = WindowState.Minimized;
-                }
-                else if (result == ButtonResult.Ok)
-                {
-                    // 강제 종료 플래그를 설정하고 다시 닫기 시도
-                    _forceClose = true;
-                    Close();
-                }
+                await ShowMcpServerRunningDialog();
             });
         }
 
         base.OnClosing(e);
+    }
+
+    private async Task ShowMcpServerRunningDialog()
+    {
+        var result = await MessageBoxManager
+            .GetMessageBoxStandard(new MessageBoxStandardParams
+            {
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                ContentTitle = "MCP 서버 실행 중",
+                ContentMessage = "MCP 서버가 현재 실행 중입니다.\n\nTableCloth를 종료하시겠습니까?\n(MCP 서버도 함께 종료됩니다)",
+                Icon = MsBox.Avalonia.Enums.Icon.Question,
+                ButtonDefinitions = ButtonEnum.YesNo,
+                EnterDefaultButton = ClickEnum.No,
+                EscDefaultButton = ClickEnum.No
+            })
+            .ShowWindowDialogAsync(this);
+        
+        if (result == ButtonResult.Yes)
+        {
+            // 완전히 종료
+            _forceClose = true;
+            Close();
+        }
+        // No를 선택하거나 ESC를 누르면 아무것도 하지 않음
     }
 
     protected override void OnLoaded(RoutedEventArgs e)
@@ -224,37 +212,8 @@ public partial class LauncherMainWindow :
     {
         Dispatcher.UIThread.Invoke(async () =>
         {
-            var result = await MessageBoxManager
-                .GetMessageBoxStandard(new MessageBoxStandardParams
-                {
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                    ContentTitle = "MCP 서버 실행 중",
-                    ContentMessage = "MCP 서버가 현재 실행 중이며 Claude Desktop에서 사용 중일 수 있습니다.\n\n서버를 계속 실행하려면 '취소'를 선택하여 최소화하거나, '확인'을 선택하여 완전히 종료하시겠습니까?",
-                    Icon = MsBox.Avalonia.Enums.Icon.Question,
-                    ButtonDefinitions = ButtonEnum.OkCancel,
-                    EnterDefaultButton = ClickEnum.Cancel,
-                    EscDefaultButton = ClickEnum.Cancel
-                })
-                .ShowWindowDialogAsync(this);
-
-            if (result == ButtonResult.Cancel)
-            {
-                // 최소화
-                WindowState = WindowState.Minimized;
-            }
-            else if (result == ButtonResult.Ok)
-            {
-                // 강제 종료 플래그를 설정하고 프로그램 종료
-                _forceClose = true;
-                Close();
-            }
+            await ShowMcpServerRunningDialog();
         });
-    }
-
-    void IRecipient<CloseButtonMessage>.Receive(CloseButtonMessage message)
-    {
-        _forceClose = true;
-        Close();
     }
 
     void IRecipient<ManageFolderButtonMessage>.Receive(ManageFolderButtonMessage message)
@@ -337,13 +296,13 @@ public partial class LauncherMainWindow :
             {
                 var originalText = _viewModel.McpServerStatusText;
                 if (task.IsCanceled)
-                    _viewModel.McpServerStatusText = "설정 복사가 취소되었습니다.";
+                    _viewModel.McpServerStatusText = "복사 작업이 취소되었습니다.";
                 else if (task.IsFaulted)
-                    _viewModel.McpServerStatusText = "설정 복사 중 오류가 발생했습니다.";
+                    _viewModel.McpServerStatusText = "복사 중에 오류가 발생했습니다.";
                 else if (task.IsCompleted)
                     _viewModel.McpServerStatusText = "Claude Desktop 설정이 클립보드에 복사되었습니다!";
                 else
-                    _viewModel.McpServerStatusText = "설정 복사에 실패했습니다.";
+                    _viewModel.McpServerStatusText = "복사 작업에 실패했습니다.";
 
                 // 2초 후 원래 텍스트로 복원
                 _ = Task.Delay(TimeSpan.FromSeconds(2d)).ContinueWith(_ =>
@@ -355,7 +314,7 @@ public partial class LauncherMainWindow :
         catch (Exception ex)
         {
             var originalText = _viewModel.McpServerStatusText;
-            _viewModel.McpServerStatusText = $"설정 복사 실패: {ex.Message}";
+            _viewModel.McpServerStatusText = $"복사 중 오류: {ex.Message}";
 
             // 3초 후 원래 텍스트로 복원
             _ = Task.Delay(TimeSpan.FromSeconds(3d)).ContinueWith(_ =>
@@ -373,8 +332,8 @@ public partial class LauncherMainWindow :
                 .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                    ContentTitle = "새 버전 사용 가능",
-                    ContentMessage = $"새 버전 {message.Version}이(가) 사용 가능합니다.\n\n다운로드 페이지를 열시겠습니까?",
+                    ContentTitle = "새 버전 업데이트 알림",
+                    ContentMessage = $"새 버전 {message.Version}이(가) 출시 되었습니다.\n\n다운로드 페이지를 여시겠습니까?",
                     Icon = MsBox.Avalonia.Enums.Icon.Info,
                     ButtonDefinitions = ButtonEnum.YesNo,
                     EnterDefaultButton = ClickEnum.Yes,

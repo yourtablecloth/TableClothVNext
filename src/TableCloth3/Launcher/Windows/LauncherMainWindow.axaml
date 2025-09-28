@@ -59,32 +59,33 @@
 			<!-- Action Buttons -->
 			<Grid Margin="0,24,0,0" DockPanel.Dock="Bottom">
 				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="Auto" />
 					<ColumnDefinition Width="*" />
-					<ColumnDefinition Width="Auto" />
 					<ColumnDefinition Width="Auto" />
 				</Grid.ColumnDefinitions>
 				
-				<StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="12">
+				<!-- Secondary Actions (Left side) -->
+				<StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8" HorizontalAlignment="Left">
 					<Button Content="{x:Static lang:LauncherStrings.AboutApp}" 
 					        Command="{Binding AboutButtonCommand}"
-					        Classes="secondary" />
+					        Classes="secondary"
+					        Padding="12,6"
+					        FontSize="12" />
 					<Button Content="{x:Static sharedLang:SharedStrings.SponsorButton}" 
 					        Command="{Binding SponsorButtonCommand}"
 					        ToolTip.Tip="{x:Static sharedLang:SharedStrings.SponsorTooltip}"
-					        Classes="primary"
-					        Background="#FF6B6B"
-					        BorderBrush="#FF5252" />
+					        Classes="secondary"
+					        Padding="12,6"
+					        FontSize="12"
+					        Foreground="#FF6B6B" />
 				</StackPanel>
 				
-				<StackPanel Grid.Column="3" Orientation="Horizontal" Spacing="12">
+				<!-- Primary Actions (Right side) -->
+				<StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12">
 					<Button Content="{x:Static lang:LauncherStrings.LaunchSandbox}" 
 					        Command="{Binding LaunchButtonCommand}"
 					        Classes="primary"
-					        MinWidth="120" />
-					<Button Content="{x:Static lang:LauncherStrings.CloseApp}" 
-					        Command="{Binding CloseButtonCommand}"
-					        Classes="secondary" />
+					        MinWidth="120"
+					        FontWeight="Medium" />
 				</StackPanel>
 			</Grid>
 			
