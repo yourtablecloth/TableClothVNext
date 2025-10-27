@@ -230,23 +230,23 @@ public partial class LauncherMainWindow :
     {
         Dispatcher.UIThread.Invoke(async () =>
         {
-            var result = await MessageBoxManager
-                .GetMessageBoxStandard(new MessageBoxStandardParams
-                {
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                    ContentTitle = "새 버전 업데이트 알림",
-                    ContentMessage = $"새 버전 {message.Version}이(가) 출시 되었습니다.\n\n다운로드 페이지를 여시겠습니까?",
-                    Icon = MsBox.Avalonia.Enums.Icon.Info,
-                    ButtonDefinitions = ButtonEnum.YesNo,
-                    EnterDefaultButton = ClickEnum.Yes,
-                    EscDefaultButton = ClickEnum.No
-                })
-                .ShowWindowDialogAsync(this);
+        var result = await MessageBoxManager
+  .GetMessageBoxStandard(new MessageBoxStandardParams
+  {
+     WindowStartupLocation = WindowStartupLocation.CenterOwner,
+   ContentTitle = LauncherStrings.NewVersionUpdateNotification,
+    ContentMessage = string.Format(LauncherStrings.NewVersionAvailableMessage, message.Version),
+           Icon = MsBox.Avalonia.Enums.Icon.Info,
+      ButtonDefinitions = ButtonEnum.YesNo,
+           EnterDefaultButton = ClickEnum.Yes,
+       EscDefaultButton = ClickEnum.No
+          })
+    .ShowWindowDialogAsync(this);
 
-            if (result == ButtonResult.Yes)
-            {
-                using var process = _processManagerFactory.CreateShellExecuteProcess(message.ReleaseUrl);
-                process.Start();
+         if (result == ButtonResult.Yes)
+   {
+      using var process = _processManagerFactory.CreateShellExecuteProcess(message.ReleaseUrl);
+          process.Start();
             }
         });
     }

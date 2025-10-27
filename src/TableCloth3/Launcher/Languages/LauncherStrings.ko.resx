@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -217,5 +217,31 @@
   </data>
   <data name="FolderAccess" xml:space="preserve">
     <value>폴더 접근</value>
+  </data>
+  <data name="NewVersionUpdateNotification" xml:space="preserve">
+    <value>새 버전 업데이트 알림</value>
+    <comment>LauncherMainWindow</comment>
+  </data>
+  <data name="NewVersionAvailableMessage" xml:space="preserve">
+    <value>새 버전 {0}이(가) 출시 되었습니다.
+
+다운로드 페이지를 여시겠습니까?</value>
+    <comment>LauncherMainWindow</comment>
+  </data>
+  <data name="DisclaimerWindowTitle" xml:space="preserve">
+    <value>식탁보 사용 시 주의 사항</value>
+    <comment>DisclaimerWindow</comment>
+  </data>
+  <data name="DisclaimerPleaseRead" xml:space="preserve">
+    <value>※ 꼭 읽어주세요.</value>
+    <comment>DisclaimerWindow</comment>
+  </data>
+  <data name="DisclaimerAcceptButton" xml:space="preserve">
+    <value>동의합니다. 일주일 동안 이 화면을 보지 않겠습니다.</value>
+    <comment>DisclaimerWindow</comment>
+  </data>
+  <data name="DisclaimerMessage" xml:space="preserve">
+    <value>식탁보를 사용 중 발생하는 개인, 기업, 기관의 금전 손실, 세금 신고 누락 등을 비롯한 어떠한 장애나 손해에 대해서는 사용자 본인에게 책임이 있습니다.</value>
+    <comment>DisclaimerWindow</comment>
   </data>
 </root>

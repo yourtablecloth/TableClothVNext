@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -250,5 +250,27 @@ Do you want to minimize the application to keep the server running, or do you wa
   <data name="FolderAccess" xml:space="preserve">
     <value>Folder Access</value>
     <comment>LauncherMainWindow</comment>
+  </data>
+  <data name="NewVersionAvailableMessage" xml:space="preserve">
+    <value>New version {0} has been released.
+
+Would you like to open the download page?</value>
+<comment>LauncherMainWindow</comment>
+  </data>
+  <data name="DisclaimerWindowTitle" xml:space="preserve">
+    <value>TableCloth Usage Notice</value>
+    <comment>DisclaimerWindow</comment>
+  </data>
+  <data name="DisclaimerPleaseRead" xml:space="preserve">
+    <value>※ Please read carefully.</value>
+    <comment>DisclaimerWindow</comment>
+  </data>
+  <data name="DisclaimerAcceptButton" xml:space="preserve">
+    <value>I agree. Do not show this screen for a week.</value>
+    <comment>DisclaimerWindow</comment>
+</data>
+  <data name="DisclaimerMessage" xml:space="preserve">
+    <value>Users are responsible for any financial loss, missed tax filings, or any other issues or damages that occur while using TableCloth, including those affecting individuals, businesses, or institutions.</value>
+    <comment>DisclaimerWindow</comment>
   </data>
 </root>

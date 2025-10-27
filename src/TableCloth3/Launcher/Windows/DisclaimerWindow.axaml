@@ -2,11 +2,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:lang="clr-namespace:TableCloth3.Launcher.Languages"
         xmlns:vm="clr-namespace:TableCloth3.Launcher.ViewModels"
         mc:Ignorable="d"
         x:Class="TableCloth3.Launcher.Windows.DisclaimerWindow"
         x:DataType="vm:DisclaimerWindowViewModel"
-        Title="식탁보 사용 시 주의 사항"
+        Title="{x:Static lang:LauncherStrings.DisclaimerWindowTitle}"
         WindowStartupLocation="CenterOwner"
         Width="500"
         CanResize="False"
@@ -15,12 +16,10 @@
 		<vm:DisclaimerWindowViewModel />
 	</Design.DataContext>
 	<DockPanel Margin="20">
-		<TextBlock DockPanel.Dock="Top" Text="※ 꼭 읽어주세요." />
-		<Button Margin="0,20,0,0" HorizontalAlignment="Center" Command="{Binding AcceptCommand}" Content="동의합니다. 일주일 동안 이 화면을 보지 않겠습니다." DockPanel.Dock="Bottom" />
+		<TextBlock DockPanel.Dock="Top" Text="{x:Static lang:LauncherStrings.DisclaimerPleaseRead}" />
+		<Button Margin="0,20,0,0" HorizontalAlignment="Center" Command="{Binding AcceptCommand}" Content="{x:Static lang:LauncherStrings.DisclaimerAcceptButton}" DockPanel.Dock="Bottom" />
 		<Border Margin="0,10,0,0" Background="{DynamicResource SolidBackgroundFillColorBaseBrush}" BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="{DynamicResource ControlCornerRadius}">
-			<TextBlock TextWrapping="WrapWithOverflow" FontSize="18" Foreground="Red" FontWeight="SemiBold" Margin="10">
-				식탁보를 사용 중 발생하는 개인, 기업, 기관의 금전 손실, 세금 신고 누락 등을 비롯한 어떠한 장애나 손해에 대해서는 사용자 본인에게 책임이 있습니다.
-			</TextBlock>
+			<TextBlock TextWrapping="WrapWithOverflow" FontSize="18" Foreground="Red" FontWeight="SemiBold" Margin="10" Text="{x:Static lang:LauncherStrings.DisclaimerMessage}" />
 		</Border>
 	</DockPanel>
 </Window>
