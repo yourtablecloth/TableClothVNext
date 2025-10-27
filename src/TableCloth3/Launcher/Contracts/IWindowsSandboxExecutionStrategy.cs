@@ -29,6 +29,5 @@ public interface IWindowsSandboxExecutionStrategy
     /// </summary>
     /// <param name="profilePath">WSB 프로필 파일 경로</param>
     /// <param name="cancellationToken">취소 토큰</param>
-    /// <returns>시작된 프로세스</returns>
-    Task<Process> ExecuteAsync(string profilePath, CancellationToken cancellationToken = default);
+    Task ExecuteAsync(string profilePath, CancellationToken cancellationToken = default);
 }

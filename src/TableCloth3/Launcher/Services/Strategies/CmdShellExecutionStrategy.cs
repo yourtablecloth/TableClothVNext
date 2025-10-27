@@ -43,7 +43,7 @@ public sealed class CmdShellExecutionStrategy : IWindowsSandboxExecutionStrategy
         }
     }
 
-    public async Task<Process> ExecuteAsync(string profilePath, CancellationToken cancellationToken = default)
+    public async Task ExecuteAsync(string profilePath, CancellationToken cancellationToken = default)
     {
         var windowsSandboxExecPath = Path.Combine(
            Environment.GetFolderPath(Environment.SpecialFolder.System),
@@ -57,8 +57,5 @@ public sealed class CmdShellExecutionStrategy : IWindowsSandboxExecutionStrategy
 
         if (!process.Start())
             throw new InvalidOperationException("Failed to start Windows Sandbox process.");
-
-        await Task.CompletedTask;
-        return process;
     }
 }

@@ -50,11 +50,7 @@ public sealed class WindowsSandboxLauncher
         }
 
         // 선택된 전략으로 Windows Sandbox 실행
-        using var process = await strategy.ExecuteAsync(wsbPath, cancellationToken).ConfigureAwait(false);
-
-        if (process != null)
-            await process.WaitForExitAsync(cancellationToken).ConfigureAwait(false);
-
+        await strategy.ExecuteAsync(wsbPath, cancellationToken).ConfigureAwait(false);
         return warnings.ToArray();
     }
 }

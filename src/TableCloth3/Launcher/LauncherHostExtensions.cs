@@ -13,7 +13,7 @@ internal static class LauncherHostExtensions
     public static IHostApplicationBuilder UseTableCloth3LauncherComponents(this IHostApplicationBuilder builder)
     {
         // Windows Sandbox 실행 전략 등록
-        builder.Services.AddSingleton<IWindowsSandboxExecutionStrategy, WsbExeExecutionStrategy>();
+        builder.Services.AddSingleton<IWindowsSandboxExecutionStrategy, WsbCliExeExecutionStrategy>();
         builder.Services.AddSingleton<IWindowsSandboxExecutionStrategy, CmdShellExecutionStrategy>();
         builder.Services.AddSingleton<WindowsSandboxExecutionStrategyFactory>();
 
