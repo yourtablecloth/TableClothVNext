@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -66,7 +66,6 @@ internal static class SharedHostExtensions
         builder.Services.AddSingleton<AvaloniaWindowManager>();
 
         builder.Services.AddSingleton<ProcessManagerFactory>();
-        builder.Services.AddSingleton<McpServerStatusService>();
 
         builder.Services.AddHttpClient(CatalogHttpClient, client =>
         {

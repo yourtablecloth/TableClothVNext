@@ -23,11 +23,9 @@ public partial class LauncherMainWindow :
     IShowDisclaimerWindowMessageRecipient,
     IAboutButtonMessageRecipient,
     ISponsorButtonMessageRecipient,
-    IMcpServerCloseConfirmationMessageRecipient,
     IManageFolderButtonMessageRecipient,
     INotifyErrorMessageRecipient,
     INotifyWarningsMessageRecipient,
-    ICopyMcpConfigMessageRecipient,
     IShowUpdateAvailableMessageRecipient
 {
     [ActivatorUtilitiesConstructor]
@@ -50,11 +48,9 @@ public partial class LauncherMainWindow :
         _messenger.Register<ShowDisclaimerWindowMessage>(this);
         _messenger.Register<AboutButtonMessage>(this);
         _messenger.Register<SponsorButtonMessage>(this);
-        _messenger.Register<McpServerCloseConfirmationMessage>(this);
         _messenger.Register<ManageFolderButtonMessage>(this);
         _messenger.Register<NotifyErrorMessage>(this);
         _messenger.Register<NotifyWarningsMessage>(this);
-        _messenger.Register<CopyMcpConfigMessage>(this);
         _messenger.Register<ShowUpdateAvailableMessage>(this);
 
         //ShowAsDialog = true;
@@ -71,48 +67,6 @@ public partial class LauncherMainWindow :
     private readonly AvaloniaWindowManager _windowManager = default!;
     private readonly LauncherSettingsManager _launcherSettingsManager = default!;
     private readonly ProcessManagerFactory _processManagerFactory = default!;
-
-    private bool _forceClose = false;
-
-    protected override void OnClosing(WindowClosingEventArgs e)
-    {
-        // °­Á¦ ´İ±â°¡ ¾Æ´Ï°í MCP ¼­¹ö°¡ ½ÇÇà ÁßÀÎ °æ¿ì¿¡¸¸ È®ÀÎ ´ëÈ­»óÀÚ Ç¥½Ã
-        if (!_forceClose && _viewModel.IsMcpServerHealthy && _viewModel.CurrentServerStatus?.IsHealthy == true)
-        {
-            e.Cancel = true;
-
-            Dispatcher.UIThread.Post(async () =>
-            {
-                await ShowMcpServerRunningDialog();
-            });
-        }
-
-        base.OnClosing(e);
-    }
-
-    private async Task ShowMcpServerRunningDialog()
-    {
-        var result = await MessageBoxManager
-            .GetMessageBoxStandard(new MessageBoxStandardParams
-            {
-                WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                ContentTitle = "MCP ¼­¹ö ½ÇÇà Áß",
-                ContentMessage = "MCP ¼­¹ö°¡ ÇöÀç ½ÇÇà ÁßÀÔ´Ï´Ù.\n\nTableCloth¸¦ Á¾·áÇÏ½Ã°Ú½À´Ï±î?\n(MCP ¼­¹öµµ ÇÔ²² Á¾·áµË´Ï´Ù)",
-                Icon = MsBox.Avalonia.Enums.Icon.Question,
-                ButtonDefinitions = ButtonEnum.YesNo,
-                EnterDefaultButton = ClickEnum.No,
-                EscDefaultButton = ClickEnum.No
-            })
-            .ShowWindowDialogAsync(this);
-        
-        if (result == ButtonResult.Yes)
-        {
-            // ¿ÏÀüÈ÷ Á¾·á
-            _forceClose = true;
-            Close();
-        }
-        // No¸¦ ¼±ÅÃÇÏ°Å³ª ESC¸¦ ´©¸£¸é ¾Æ¹«°Íµµ ÇÏÁö ¾ÊÀ½
-    }
 
     protected override void OnLoaded(RoutedEventArgs e)
     {
@@ -208,14 +162,6 @@ public partial class LauncherMainWindow :
         });
     }
 
-    void IRecipient<McpServerCloseConfirmationMessage>.Receive(McpServerCloseConfirmationMessage message)
-    {
-        Dispatcher.UIThread.Invoke(async () =>
-        {
-            await ShowMcpServerRunningDialog();
-        });
-    }
-
     void IRecipient<ManageFolderButtonMessage>.Receive(ManageFolderButtonMessage message)
     {
         var folderManageWindow = _windowManager.GetAvaloniaWindow<FolderManageWindow>();
@@ -280,50 +226,6 @@ public partial class LauncherMainWindow :
         });
     }
 
-    void IRecipient<CopyMcpConfigMessage>.Receive(CopyMcpConfigMessage message)
-    {
-        if (_viewModel.CurrentServerStatus == null || !_viewModel.CurrentServerStatus.IsHealthy)
-            return;
-
-        try
-        {
-            var clipboard = TopLevel.GetTopLevel(this)?.Clipboard;
-            if (clipboard == null)
-                throw new Exception("Å¬¸³º¸µå¿¡ Á¢±ÙÇÒ ¼ö ¾ø½À´Ï´Ù.");
-
-            var config = _viewModel.GenerateMcpConfigJson();
-            clipboard.SetTextAsync(config).ContinueWith(task =>
-            {
-                var originalText = _viewModel.McpServerStatusText;
-                if (task.IsCanceled)
-                    _viewModel.McpServerStatusText = "º¹»ç ÀÛ¾÷ÀÌ Ãë¼ÒµÇ¾ú½À´Ï´Ù.";
-                else if (task.IsFaulted)
-                    _viewModel.McpServerStatusText = "º¹»ç Áß¿¡ ¿À·ù°¡ ¹ß»ıÇß½À´Ï´Ù.";
-                else if (task.IsCompleted)
-                    _viewModel.McpServerStatusText = "Claude Desktop ¼³Á¤ÀÌ Å¬¸³º¸µå¿¡ º¹»çµÇ¾ú½À´Ï´Ù!";
-                else
-                    _viewModel.McpServerStatusText = "º¹»ç ÀÛ¾÷¿¡ ½ÇÆĞÇß½À´Ï´Ù.";
-
-                // 2ÃÊ ÈÄ ¿ø·¡ ÅØ½ºÆ®·Î º¹¿ø
-                _ = Task.Delay(TimeSpan.FromSeconds(2d)).ContinueWith(_ =>
-                {
-                    Dispatcher.UIThread.Post(() => _viewModel.McpServerStatusText = originalText);
-                });
-            }).SafeFireAndForget();
-        }
-        catch (Exception ex)
-        {
-            var originalText = _viewModel.McpServerStatusText;
-            _viewModel.McpServerStatusText = $"º¹»ç Áß ¿À·ù: {ex.Message}";
-
-            // 3ÃÊ ÈÄ ¿ø·¡ ÅØ½ºÆ®·Î º¹¿ø
-            _ = Task.Delay(TimeSpan.FromSeconds(3d)).ContinueWith(_ =>
-            {
-                Dispatcher.UIThread.Post(() => _viewModel.McpServerStatusText = originalText);
-            });
-        }
-    }
-
     void IRecipient<ShowUpdateAvailableMessage>.Receive(ShowUpdateAvailableMessage message)
     {
         Dispatcher.UIThread.Invoke(async () =>
@@ -332,8 +234,8 @@ public partial class LauncherMainWindow :
                 .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                    ContentTitle = "»õ ¹öÀü ¾÷µ¥ÀÌÆ® ¾Ë¸²",
-                    ContentMessage = $"»õ ¹öÀü {message.Version}ÀÌ(°¡) Ãâ½Ã µÇ¾ú½À´Ï´Ù.\n\n´Ù¿î·Îµå ÆäÀÌÁö¸¦ ¿©½Ã°Ú½À´Ï±î?",
+                    ContentTitle = "ìƒˆ ë²„ì „ ì—…ë°ì´íŠ¸ ì•Œë¦¼",
+                    ContentMessage = $"ìƒˆ ë²„ì „ {message.Version}ì´(ê°€) ì¶œì‹œ ë˜ì—ˆìŠµë‹ˆë‹¤.\n\në‹¤ìš´ë¡œë“œ í˜ì´ì§€ë¥¼ ì—¬ì‹œê² ìŠµë‹ˆê¹Œ?",
                     Icon = MsBox.Avalonia.Enums.Icon.Info,
                     ButtonDefinitions = ButtonEnum.YesNo,
                     EnterDefaultButton = ClickEnum.Yes,

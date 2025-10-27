@@ -1,11 +1,7 @@
-﻿using AsyncAwaitBestPractices;
 using Avalonia;
 using Lemon.Hosting.AvaloniauiDesktop;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting.Server;
-using Microsoft.AspNetCore.Hosting.Server.Features;
-using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Runtime.Versioning;
 using TableCloth3.Help;
@@ -23,9 +19,8 @@ public static class Program
     [SupportedOSPlatform("windows")]
     private static void Main(string[] args)
     {
-        var builder = WebApplication.CreateBuilder(args);
+        var builder = Host.CreateApplicationBuilder(args);
         builder.UseTableCloth3SharedComponents(args, out var scenarioRouter);
-        builder.AddMcpServer();
 
         // Register singleton service
         builder.Services.AddSingleton<ISingleInstanceService, SingleInstanceService>();
@@ -64,60 +59,9 @@ public static class Program
             return;
         }
 
-        app.TryMapMcpServer();
-
-        app.Lifetime.ApplicationStarted.Register(() =>
-        {
-            var logger = app.Services.GetRequiredService<ILogger<SecondaryWebHostManager>>();
-
-            try
-            {
-                var server = app.Services.GetRequiredService<IServer>();
-                var addressResolver = server.Features.GetRequiredFeature<IServerAddressesFeature>();
-
-                var firstAddress = addressResolver.Addresses.FirstOrDefault();
-                if (!string.IsNullOrEmpty(firstAddress))
-                {
-                    logger.LogInformation("MCP server started at {Address}.", firstAddress);
-
-                    var webHostManager = app.Services.GetRequiredService<SecondaryWebHostManager>();
-
-                    // Start YARP proxy server
-                    Task.Run(async () =>
-                    {
-                        try
-                        {
-                            logger.LogInformation("Starting YARP proxy server... (Target: {TargetAddress})", firstAddress);
-                            var proxyApp = await webHostManager.StartSecondaryWebHost(firstAddress);
-
-                            if (proxyApp != null)
-                            {
-                                logger.LogInformation("YARP proxy server successfully started at http://127.0.0.1:29400.");
-                            }
-                            else
-                            {
-                                logger.LogError("Failed to start YARP proxy server.");
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            logger.LogError(ex, "An error occurred while starting YARP proxy server.");
-                        }
-                    }).SafeFireAndForget();
-                }
-                else
-                {
-                    logger.LogWarning("Could not find MCP server address.");
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "An error occurred while starting the server.");
-            }
-        });
-
         // Register cleanup on application shutdown
-        app.Lifetime.ApplicationStopping.Register(() =>
+        var lifetime = app.Services.GetRequiredService<IHostApplicationLifetime>();
+        lifetime.ApplicationStopping.Register(() =>
         {
             var loggerFactory = app.Services.GetRequiredService<ILoggerFactory>();
             var logger = loggerFactory.CreateLogger("TableCloth3.Program");
