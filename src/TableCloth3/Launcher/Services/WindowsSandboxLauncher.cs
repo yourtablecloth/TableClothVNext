@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using TableCloth3.Launcher.ViewModels;
 using TableCloth3.Shared.Services;
 
@@ -9,17 +9,20 @@ public sealed class WindowsSandboxLauncher
     public WindowsSandboxLauncher(
         LauncherSettingsManager launcherSettingsManager,
         WindowsSandboxComposer windowsSandboxComposer,
-        ProcessManagerFactory processManagerFactory)
+        ProcessManagerFactory processManagerFactory,
+        WindowsSandboxExecutionStrategyFactory strategyFactory)
         : base()
     {
         _launcherSettingsManager = launcherSettingsManager;
         _windowsSandboxComposer = windowsSandboxComposer;
         _processManagerFactory = processManagerFactory;
+        _strategyFactory = strategyFactory;
     }
 
     private readonly LauncherSettingsManager _launcherSettingsManager = default!;
     private readonly WindowsSandboxComposer _windowsSandboxComposer = default!;
     private readonly ProcessManagerFactory _processManagerFactory = default!;
+    private readonly WindowsSandboxExecutionStrategyFactory _strategyFactory = default!;
 
     public async Task<string[]> LaunchWindowsSandboxAsync(
         LauncherMainWindowViewModel viewModel,
@@ -37,13 +40,19 @@ public sealed class WindowsSandboxLauncher
         var wsbPath = await _windowsSandboxComposer.GenerateWindowsSandboxProfileAsync(
             viewModel, warnings, targetUri, cancellationToken).ConfigureAwait(false);
 
-        var windowsSandboxExecPath = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.System),
-            "WindowsSandbox.exe");
+        // 실행 전략 선택
+        var (strategy, isPreferredAvailable) = await _strategyFactory.SelectStrategyAsync(cancellationToken).ConfigureAwait(false);
 
-        using var process = _processManagerFactory.CreateCmdShellProcess(windowsSandboxExecPath, wsbPath);
+        // 기본 전략을 사용할 수 없는 경우 경고 메시지 추가
+        if (!isPreferredAvailable)
+        {
+            warnings.Add($"The preferred Windows Sandbox execution method is not available. Using fallback method: {strategy.Name}");
+        }
 
-        if (process.Start())
+        // 선택된 전략으로 Windows Sandbox 실행
+        using var process = await strategy.ExecuteAsync(wsbPath, cancellationToken).ConfigureAwait(false);
+
+        if (process != null)
             await process.WaitForExitAsync(cancellationToken).ConfigureAwait(false);
 
         return warnings.ToArray();

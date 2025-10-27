@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Xml;
 using System.Xml.Linq;
 using TableCloth3.Launcher.ViewModels;
